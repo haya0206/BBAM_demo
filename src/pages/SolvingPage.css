@@ -1,0 +1,11 @@
+:local(.Text) {
+    display: none;
+}
+
+.CodeMirror {
+    height: 100% !important;
+}
+
+:local(.Block) {
+    display: none;
+}

@@ -1,13 +1,9 @@
-import { observable, action } from "mobx";
-
+import { observable } from "mobx";
 class ObservableStore {
   @observable
-  blocks = null;
-
-  @action
-  changeText(item) {
-    this.text = item;
-  }
+  workspace = null;
+  @observable
+  isChange = true;
 }
 
 export default ObservableStore;

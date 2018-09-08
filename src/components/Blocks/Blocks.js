@@ -1,15 +1,11 @@
 import BBAMblocks from "BBAM_Blocks";
 import React, { Component } from "react";
 import BlocksComponent from "../asdfd/blocks";
-import { observer } from "mobx-react";
-import { observable, action } from "mobx";
+import { observer, inject } from "mobx-react";
 import withWidth from "@material-ui/core/withWidth";
+@inject("store")
 @observer
 class Blocks extends Component {
-  @observable
-  blocks = null;
-  @observable
-  workspace = null;
   componentDidMount() {
     this.workspace = BBAMblocks.inject(this.blocks, {
       comments: true,
@@ -43,10 +39,9 @@ class Blocks extends Component {
     this.workspace.setToolboxRefreshEnabled = () => {
       this.setToolboxRefreshEnabled(false);
     };
+    this.props.store.workspace = this.workspace;
   }
-  @action
   setBlocks(blocks) {
-    console.log(blocks);
     this.blocks = blocks;
   }
   render() {
@@ -65,6 +60,10 @@ class Blocks extends Component {
       onRequestCloseCustomProcedures,
       toolboxXML,
       width,
+      store,
+      nowChange,
+      value,
+      setValue,
       ...props
     } = this.props;
     return (

@@ -23,6 +23,9 @@ class ProblemListPage extends Component {
           <li>
             <Link to="/problem/6">문제6</Link>
           </li>
+          <li>
+            <Link to="/textTest">텍스트 테스트</Link>
+          </li>
         </ul>
       </div>
     );
