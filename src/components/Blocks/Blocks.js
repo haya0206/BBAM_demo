@@ -38,7 +38,7 @@ class Blocks extends Component {
     );
     this.workspace.setToolboxRefreshEnabled = () => {
       this.setToolboxRefreshEnabled(false);
-    };
+    }; 
     this.props.store.workspace = this.workspace;
   }
   setBlocks(blocks) {
