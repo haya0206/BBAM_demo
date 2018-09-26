@@ -3,6 +3,8 @@ import React, { Component } from "react";
 import BlocksComponent from "../asdfd/blocks";
 import { observer, inject } from "mobx-react";
 import withWidth from "@material-ui/core/withWidth";
+import parser from "fast-xml-parser";
+import axios from "axios";
 @inject("store")
 @observer
 class Blocks extends Component {
@@ -33,14 +35,55 @@ class Blocks extends Component {
         dragShadowOpacity: 0.6
       }
     });
+    this.workspace.getFlyout().setRecyclingEnabled(false);
+    var xml = BBAMblocks.Xml.workspaceToDom(this.workspace);
+    BBAMblocks.ScratchMsgs.setLocale("ko");
+    BBAMblocks.Xml.clearWorkspaceAndLoadFromXml(xml, this.workspace);
+    this.workspace.getFlyout().setRecyclingEnabled(true);
     this.setToolboxRefreshEnabled = this.workspace.setToolboxRefreshEnabled.bind(
       this.workspace
     );
     this.workspace.setToolboxRefreshEnabled = () => {
       this.setToolboxRefreshEnabled(false);
-    }; 
+    };
     this.props.store.workspace = this.workspace;
+    this.workspace.addChangeListener(this.eventListener);
   }
+  eventListener = event => {
+    if (event.type === BBAMblocks.Events.BLOCK_CREATE) {
+      this.post("create");
+    } else if (event.type === BBAMblocks.Events.BLOCK_DELETE) {
+      this.post("delete");
+    } else if (event.type === BBAMblocks.Events.BLOCK_CHANGE) {
+      this.post("change");
+    } else if (event.type === BBAMblocks.Events.BLOCK_MOVE) {
+      this.post("move");
+    } else if (event.type === BBAMblocks.Events.VAR_CREATE) {
+      this.post("varCreate");
+    } else if (event.type === BBAMblocks.Events.VAR_DELETE) {
+      this.post("varDelete");
+    } else if (event.type === BBAMblocks.Events.VAR_RENAME) {
+      this.post("varRename");
+    }
+
+    //console.log(this.workspace.getBlockById(event.blockId)) ;
+  };
+  post = type => {
+    const url = "http://192.168.43.240:5000/asdf";
+    const xml = BBAMblocks.Xml.workspaceToDom(this.props.store.workspace);
+    axios
+      .post(url, {
+        type: type,
+        attribute: "xml",
+        block: BBAMblocks.Xml.domToPrettyText(xml)
+      })
+      .then(function(response) {
+        console.log(response);
+      })
+      .catch(function(error) {
+        console.log(error);
+      });
+  };
   setBlocks(blocks) {
     this.blocks = blocks;
   }
@@ -71,9 +114,11 @@ class Blocks extends Component {
         <BlocksComponent
           componentRef={blocks => this.setBlocks(blocks)}
           height={
-            this.props.width === "xs"
-              ? "calc(100vh - 56px)"
-              : "calc(100vh - 64px)"
+            this.props.nowChange === true
+              ? ""
+              : this.props.width === "xs"
+                ? "calc(100vh - 56px)"
+                : "calc(100vh - 64px)"
           }
           {...props}
         />

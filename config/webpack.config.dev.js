@@ -243,6 +243,10 @@ module.exports = {
       {
         from: "node_modules/BBAM_Blocks/media",
         to: "static/blocks-media"
+      },
+      {
+        from: "static",
+        to: "static"
       }
     ])
   ],

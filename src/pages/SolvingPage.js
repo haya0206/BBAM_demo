@@ -47,7 +47,6 @@ class SolvingPage extends Component {
       isChange: false,
       value: ""
     };
-    this.editor = null;
   }
   handleOpen = () => {
     this.setState({ open: true });
@@ -72,8 +71,8 @@ class SolvingPage extends Component {
     this.setState({ value: text });
   };
   isChangeAction = () => {
-    BBAMblocks.WidgetDiv.hide(true);
     this.setState({ isChange: !this.state.isChange });
+    ObservableStore.workspace.setVisible(this.state.isChange);
     this.state.isChange === false
       ? this.setValue(
           BBAMblocks.Python.workspaceToCode(ObservableStore.workspace)
@@ -94,11 +93,7 @@ class SolvingPage extends Component {
             nowChange={this.state.isChange}
           />
         </Provider>
-        <div
-          className={cx({
-            Block: this.state.isChange
-          })}
-        >
+        <div>
           <Provider store={ObservableStore}>
             <Blocks
               grow={1}
