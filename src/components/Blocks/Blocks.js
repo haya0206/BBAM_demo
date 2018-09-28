@@ -3,7 +3,6 @@ import React, { Component } from "react";
 import BlocksComponent from "../asdfd/blocks";
 import { observer, inject } from "mobx-react";
 import withWidth from "@material-ui/core/withWidth";
-import parser from "fast-xml-parser";
 import axios from "axios";
 @inject("store")
 @observer
@@ -69,7 +68,7 @@ class Blocks extends Component {
     //console.log(this.workspace.getBlockById(event.blockId)) ;
   };
   post = type => {
-    const url = "http://192.168.43.240:5000/asdf";
+    const url = "http://localhost:5000/asdf";
     const xml = BBAMblocks.Xml.workspaceToDom(this.props.store.workspace);
     axios
       .post(url, {

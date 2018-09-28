@@ -1,34 +1,35 @@
 import React, { Component } from "react";
 import { Redirect } from "react-router-dom";
-import { withStyles } from "@material-ui/core/styles";
 import MobileStepper from "@material-ui/core/MobileStepper";
 import SwipeableViews from "react-swipeable-views";
-import SolvePng from "./solve.png";
-import FightPng from "./fight.png";
-import FeedBackPng from "./feedback.png";
-import ReactSVG from "react-svg";
+import Solve from "./solve.json";
+import Fight from "./fight.json";
+import FeedBack from "./feedback.json";
 import styled from "styled-components";
+import Lottie from "react-lottie";
 const tutorialSteps = [
   {
     title: "학습",
     label: "블록코딩을 이용하여 더욱 쉽고 재미있게 풀어보세요!",
-    imgPath: SolvePng
+    imgPath: Solve,
+    isStopped: false,
+    isPaused: false
   },
   {
     title: "대결",
     label: "다른 사용자와 대결하여 랭킹을 올려보세요!",
-    imgPath: FightPng
+    imgPath: Fight,
+    isStopped: true,
+    isPaused: false
   },
   {
     title: "피드백",
     label: "전문적인 피드백으로 취약점을 확실히 잡아보세요!",
-    imgPath: FeedBackPng
+    imgPath: FeedBack,
+    isStopped: true,
+    isPaused: false
   }
 ];
-const Img = styled.img`
-  transform: scale(0.25);
-  align: center;
-`;
 const ImageDiv = styled.div`
   height: 100vh;
   display: flex;
@@ -87,9 +88,9 @@ const StartButton = styled.a`
     background-position: right center;
   }
   position: absolute;
-  top: 88%;
+  top: 105%;
   left: 48%;
-  transform: translate(-50%, -30%);
+  transform: translate(-50%, -50%);
 `;
 class AppFirstPage extends Component {
   constructor(props) {
@@ -114,6 +115,8 @@ class AppFirstPage extends Component {
   };
 
   handleStepChange = activeStep => {
+    tutorialSteps[this.state.activeStep].isStopped = true;
+    tutorialSteps[activeStep].isStopped = false;
     this.setState({ activeStep });
   };
   handleOnClick = () => {
@@ -126,7 +129,7 @@ class AppFirstPage extends Component {
 
     const maxSteps = tutorialSteps.length;
     if (this.state.redirect) {
-      return <Redirect push to="/main" />;
+      return <Redirect push to="/mainpage" />;
     }
     return (
       <div>
@@ -145,7 +148,20 @@ class AppFirstPage extends Component {
                 <Value>{step.label}</Value>
               </Div>
               <ImageDiv>
-                <Img src={step.imgPath} />
+                <Lottie
+                  options={{
+                    animationData: step.imgPath,
+                    loop: false,
+                    autoplay: false,
+                    rendererSettings: {
+                      preserveAspectRatio: "svg"
+                    }
+                  }}
+                  height={300}
+                  width={300}
+                  isStopped={step.isStopped}
+                  isPaused={step.isPaused}
+                />
               </ImageDiv>
             </div>
           ))}

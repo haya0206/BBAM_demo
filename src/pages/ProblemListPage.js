@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import styled, { injectGlobal } from "styled-components";
 import firstStep from "./2.svg";
 import secondStep from "./1.svg";
+import AppBar from "../components/ProbelmListPageAppBar";
 injectGlobal`
 body {
   padding: 0px;
@@ -69,6 +70,7 @@ class ProblemListPage extends Component {
   render() {
     return (
       <div>
+        <AppBar />
         <div>
           <div>
             <StepperList>

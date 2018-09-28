@@ -1,8 +1,16 @@
 import React, { Component } from "react";
 import { Redirect } from "react-router-dom";
-import ReactSVG from "react-svg";
-import styled from "styled-components";
+import styled, { injectGlobal } from "styled-components";
 import AppBar from "../components/MainPageAppBar";
+import Avatar from "@material-ui/core/Avatar";
+import EmptyAvatar from "./emptyAvatar.png";
+injectGlobal`
+  body{
+    position: fixed; 
+    overflow-y: scroll;
+    width: 100%;
+  }
+`;
 const Circle = styled.div`
   z-index: -1;
   width: 600px;
@@ -89,6 +97,33 @@ const LoginButton = styled.a`
   left: 48%;
   transform: translate(-50%, -30%);
 `;
+const MainAvatar = styled(Avatar)`
+  margin-left: 20px;
+  width: 130px !important;
+  height: 130px !important;
+`;
+const TextFiled = styled.div`
+  float: left;
+  margin-left: 170px;
+  margin-top: -120px;
+`;
+const Name = styled.p`
+  color: #000000;
+  font-family: Youth;
+  font-size: 25px;
+  font-weight: 400;
+  line-height: 20px;
+`;
+const Level = styled.p`
+  color: #3592ff;
+  font-family: Youth;
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 20px;
+`;
+const Div = styled.div`
+  height: 100vh;
+`;
 class MainPage extends Component {
   constructor(props) {
     super(props);
@@ -107,11 +142,16 @@ class MainPage extends Component {
       return <Redirect push to="/problemList" />;
     }
     return (
-      <div>
+      <Div>
         <MainAppBar />
+        <MainAvatar alt="Remy Sharp" src={EmptyAvatar} />
+        <TextFiled>
+          <Name>empty</Name>
+          <Level>LV.0</Level>
+        </TextFiled>
         <Circle />
         <LoginButton onClick={this.handleOnClick}>목록</LoginButton>
-      </div>
+      </Div>
     );
   }
 }
