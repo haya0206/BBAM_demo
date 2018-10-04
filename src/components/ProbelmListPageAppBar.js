@@ -5,8 +5,8 @@ import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import IconButton from "@material-ui/core/IconButton";
-import MenuIcon from "../pages/MenuBlack.svg";
-import InfoIcon from "../pages/infoBlack.svg";
+import MenuIcon from "../media/MenuBlack.svg";
+import InfoIcon from "../media/infoBlack.svg";
 import styled, { injectGlobal } from "styled-components";
 const styles = {
   grow: {

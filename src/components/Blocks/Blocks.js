@@ -69,12 +69,12 @@ class Blocks extends Component {
   };
   post = type => {
     const url = "http://localhost:5000/asdf";
-    const xml = BBAMblocks.Xml.workspaceToDom(this.props.store.workspace);
+    const code = BBAMblocks.Python.workspaceToCode(this.props.store.workspace);
     axios
       .post(url, {
         type: type,
-        attribute: "xml",
-        block: BBAMblocks.Xml.domToPrettyText(xml)
+        attribute: "code",
+        code: code
       })
       .then(function(response) {
         console.log(response);

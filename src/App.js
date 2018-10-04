@@ -8,10 +8,13 @@ import {
   AppFirstPage,
   LoginPage
 } from "pages";
+
+import TransitionGroup from "react-transition-group/TransitionGroup";
 class App extends Component {
   render() {
     return (
       <div>
+        <meta name="viewport" content="width=device-width" />
         <Route exact path="/" component={LoginPage} />
         <Route exact path="/problemList" component={ProblemListPage} />
         <Route exact path="/appfirst" component={AppFirstPage} />

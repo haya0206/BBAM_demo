@@ -2,9 +2,9 @@ import React, { Component } from "react";
 import { Redirect } from "react-router-dom";
 import MobileStepper from "@material-ui/core/MobileStepper";
 import SwipeableViews from "react-swipeable-views";
-import Solve from "./solve.json";
-import Fight from "./fight.json";
-import FeedBack from "./feedback.json";
+import Solve from "../media/solve.json";
+import Fight from "../media/fight.json";
+import FeedBack from "../media/feedback.json";
 import styled from "styled-components";
 import Lottie from "react-lottie";
 const tutorialSteps = [

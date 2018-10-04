@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import styled, { injectGlobal } from "styled-components";
-import firstStep from "./2.svg";
-import secondStep from "./1.svg";
+import firstStep from "../media/2.svg";
+import secondStep from "../media/1.svg";
 import AppBar from "../components/ProbelmListPageAppBar";
 injectGlobal`
 body {

@@ -5,8 +5,8 @@ import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import IconButton from "@material-ui/core/IconButton";
-import MenuIcon from "../pages/Menu.svg";
-import InfoIcon from "../pages/info.svg";
+import MenuIcon from "../media/Menu.svg";
+import InfoIcon from "../media/info.svg";
 import styled from "styled-components";
 
 const styles = {

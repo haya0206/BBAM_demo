@@ -3,7 +3,11 @@ import { Redirect } from "react-router-dom";
 import styled, { injectGlobal } from "styled-components";
 import AppBar from "../components/MainPageAppBar";
 import Avatar from "@material-ui/core/Avatar";
-import EmptyAvatar from "./emptyAvatar.png";
+import EmptyAvatar from "../media/emptyAvatar.png";
+import solveIcon from "../media/solveIcon.svg";
+import sandboxIcon from "../media/sandboxIcon.svg";
+import peopleIcon from "../media/peopleIcon.svg";
+import fightIcon from "../media/fightIcon.svg";
 injectGlobal`
   body{
     position: fixed; 
@@ -11,91 +15,57 @@ injectGlobal`
     width: 100%;
   }
 `;
-const Circle = styled.div`
+const MainTopGradient = styled.div`
   z-index: -1;
-  width: 600px;
-  height: 490px;
-  background: radial-gradient(ellipse at left, #c291fe, transparent),
-    radial-gradient(ellipse at right, #519cfe, transparent);
+  width: 100vw;
+  height: 40vh;
+  background: linear-gradient(270deg, #c291fe, #519cfe);
   background-size: 400% 400%;
 
-  -webkit-animation: AnimationName 7s ease infinite;
-  -moz-animation: AnimationName 7s ease infinite;
-  animation: AnimationName 7s ease infinite;
+  -webkit-animation: AnimationName 8s ease infinite;
+  -moz-animation: AnimationName 8s ease infinite;
+  animation: AnimationName 8s ease infinite;
 
   @-webkit-keyframes AnimationName {
     0% {
-      background-position: 0% 50%;
+      background-position: 0% 51%;
     }
     50% {
       background-position: 100% 50%;
     }
     100% {
-      background-position: 0% 50%;
+      background-position: 0% 51%;
     }
   }
   @-moz-keyframes AnimationName {
     0% {
-      background-position: 0% 50%;
+      background-position: 0% 51%;
     }
     50% {
       background-position: 100% 50%;
     }
     100% {
-      background-position: 0% 50%;
+      background-position: 0% 51%;
     }
   }
   @keyframes AnimationName {
     0% {
-      background-position: 0% 50%;
+      background-position: 0% 51%;
     }
     50% {
       background-position: 100% 50%;
     }
     100% {
-      background-position: 0% 50%;
+      background-position: 0% 51%;
     }
   }
-  border-radius: 50%;
   position: absolute;
-  top: -120%;
+  top: 0%;
   left: 50%;
-  transform: translate(-50%, 120%);
+  transform: translate(-50%, 0%);
 `;
 const MainAppBar = styled(AppBar)`
   z-index: 1;
-`;
-const LoginButton = styled.a`
-  font-family: Youth;
-  margin: 10px;
-  font-size: 20px;
-  padding: 15px;
-  text-align: center;
-  text-transform: uppercase;
-  transition: 0.5s;
-  background-size: 200% auto;
-  color: #f7f7f7;
-  box-shadow: 0 0 20px #eee;
-  border-radius: 10px;
-  width: 200px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
-  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-  cursor: pointer;
-  display: inline-block;
-  border-radius: 25px;
-  background-image: linear-gradient(
-    to right,
-    #519cfe 0%,
-    #c395fa 51%,
-    #519cfe 100%
-  );
-  &:active {
-    background-position: right center;
-  }
-  position: absolute;
-  top: 78%;
-  left: 48%;
-  transform: translate(-50%, -30%);
 `;
 const MainAvatar = styled(Avatar)`
   margin-left: 20px;
@@ -121,6 +91,38 @@ const Level = styled.p`
   font-weight: 400;
   line-height: 20px;
 `;
+const MainItemSquere = styled.div`
+  position: relative;
+  float: left;
+  width: calc(50vw - 1.5px);
+  height: 30vh;
+  border: 1.5px solid #e2e2e2;
+  ${props => {
+    if (props.TopLeft) {
+      return `border-left: none; border-top: none; background-image: url(${solveIcon})`;
+    }
+    if (props.TopRight) {
+      return `border-right: none; border-top: none; background-image: url(${sandboxIcon})`;
+    }
+    if (props.BottomLeft) {
+      return `border-left: none; border-bottom: none; background-image: url(${peopleIcon})`;
+    }
+    if (props.BottomRight) {
+      return `border-right: none; border-bottom: none; background-image: url(${fightIcon})`;
+    } else return ``;
+  }};
+  background-size: 50% 50%;
+  background-repeat: no-repeat;
+  background-position: 50% 40%;
+`;
+const MainItemText = styled.div`
+  font-family: Youth;
+  font-size: 15px;
+  position: absolute;
+  top: 90%;
+  left: 50%;
+  transform: translate(-50%, -90%);
+`;
 const Div = styled.div`
   height: 100vh;
 `;
@@ -132,25 +134,55 @@ class MainPage extends Component {
       response: ""
     };
   }
-  handleOnClick = () => {
+  handleOnClick = url => {
     // some action...
     // then redirect
-    this.setState({ redirect: true });
+    this.setState({ redirect: true, url: url });
   };
   render() {
     if (this.state.redirect) {
-      return <Redirect push to="/problemList" />;
+      return <Redirect push to={this.state.url} />;
     }
     return (
       <Div>
-        <MainAppBar />
-        <MainAvatar alt="Remy Sharp" src={EmptyAvatar} />
-        <TextFiled>
-          <Name>empty</Name>
-          <Level>LV.0</Level>
-        </TextFiled>
-        <Circle />
-        <LoginButton onClick={this.handleOnClick}>목록</LoginButton>
+        <MainTopGradient />
+        <div
+          style={{
+            width: "100vw",
+            height: "40vh"
+          }}
+        >
+          <MainAppBar />
+          <MainAvatar alt="Remy Sharp" src={EmptyAvatar} />
+          <TextFiled>
+            <Name>empty</Name>
+            <Level>LV.0</Level>
+          </TextFiled>
+        </div>
+        <div
+          styled={{
+            width: "100vw",
+            height: "60vh"
+          }}
+        >
+          <MainItemSquere
+            TopLeft
+            onClick={() => {
+              this.handleOnClick("/problemList");
+            }}
+          >
+            <MainItemText>문제풀이</MainItemText>
+          </MainItemSquere>
+          <MainItemSquere TopRight>
+            <MainItemText>샌드박스</MainItemText>
+          </MainItemSquere>
+          <MainItemSquere BottomLeft style={{ clear: "left" }}>
+            <MainItemText>커뮤니티</MainItemText>
+          </MainItemSquere>
+          <MainItemSquere BottomRight>
+            <MainItemText>전국대전</MainItemText>
+          </MainItemSquere>
+        </div>
       </Div>
     );
   }

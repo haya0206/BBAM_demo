@@ -4,7 +4,7 @@ import { withStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import styled from "styled-components";
 import ReactSVG from "react-svg";
-import logo from "./logo.svg";
+import logo from "../media/logo.svg";
 const styles = theme => ({
   container: {
     display: "flex",
