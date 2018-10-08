@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 import React from "react";
-import Box from "../box/box";
+import Box from "../box";
 
 const BlocksComponent = props => {
   const { componentRef, ...componentProps } = props;

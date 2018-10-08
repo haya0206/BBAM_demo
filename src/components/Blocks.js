@@ -1,6 +1,6 @@
 import BBAMblocks from "BBAM_Blocks";
 import React, { Component } from "react";
-import BlocksComponent from "../asdfd/blocks";
+import BlocksComponent from "./asdfd/blocks";
 import { observer, inject } from "mobx-react";
 import withWidth from "@material-ui/core/withWidth";
 import axios from "axios";
@@ -19,10 +19,10 @@ class Blocks extends Component {
       toolbox: null,
       toolboxPosition: "start",
       horizontalLayout: false,
-      trashcan: true,
+      trashcan: false,
       sounds: false,
       zoom: {
-        controls: true,
+        controls: false,
         wheel: true,
         startScale: 0.75,
         maxScale: 4,
@@ -72,7 +72,9 @@ class Blocks extends Component {
     const code = BBAMblocks.Python.workspaceToCode(this.props.store.workspace);
     axios
       .post(url, {
-        type: type,
+        ETP: type,
+        PID: 1,
+        UID: "PSB",
         attribute: "code",
         code: code
       })
@@ -116,8 +118,8 @@ class Blocks extends Component {
             this.props.nowChange === true
               ? ""
               : this.props.width === "xs"
-                ? "calc(100vh - 56px)"
-                : "calc(100vh - 64px)"
+                ? "calc(85vh - 56px)"
+                : "calc(85vh - 64px)"
           }
           {...props}
         />

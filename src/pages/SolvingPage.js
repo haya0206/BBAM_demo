@@ -1,6 +1,7 @@
 import React, { Component } from "react";
-import Blocks from "../components/Blocks/Blocks";
-import SimpleAppBar from "../components/SimpleAppBar/SimpleAppBar";
+import Blocks from "../components/Blocks";
+import AppBar from "../components/ProblemListPageAppBar";
+import ProblemCard from "../components/ProblemCard";
 import styled from "styled-components";
 import Modal from "@material-ui/core/Modal";
 import Typography from "@material-ui/core/Typography";
@@ -12,12 +13,32 @@ import AceEditor from "react-ace";
 import style from "./SolvingPage.css";
 import classNames from "classnames/bind";
 import BBAMblocks from "BBAM_Blocks";
+import axios from "axios";
 import "brace/mode/python";
 import "brace/theme/monokai";
 const cx = classNames.bind(style);
 const Div = styled.div`
   flex-grow: 1;
   position: relative;
+`;
+const ProblemDiv = styled.div`
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  height: 15vh;
+`;
+const HintButton = styled.div`
+  position: absolute;
+  top: 90%;
+  left: 90%;
+  border-radius: 2px;
+  height: 3vh;
+  width: 7vh;
+  color: #fff;
+  background-color: #519cfe;
+  transform: translate(-90%, -90%);
 `;
 const styles = theme => ({
   paper: {
@@ -45,9 +66,31 @@ class SolvingPage extends Component {
     this.state = {
       open: false,
       isChange: false,
-      value: ""
+      value: "",
+      problemValue: "",
+      problemHint: ""
     };
   }
+  componentDidMount() {
+    this.getProblem();
+  }
+  getProblem = () => {
+    const url = "http://13.125.181.57:5000/problem";
+    axios
+      .post(url, {
+        id: this.props.match.params.id
+      })
+      .then(response => {
+        this.setState({
+          problemValue: response.data[0].PRB_CNT,
+          problemHint: response.data[0].PRB_HNT
+        });
+        console.log(response);
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
   handleOpen = () => {
     this.setState({ open: true });
   };
@@ -82,8 +125,10 @@ class SolvingPage extends Component {
 
   render() {
     const { classes } = this.props;
+    const { problemHint, problemValue } = this.state;
     return (
       <Div>
+        {/*
         <Provider store={ObservableStore}>
           <SimpleAppBar
             ida={this.props.match.params.id}
@@ -92,17 +137,20 @@ class SolvingPage extends Component {
             isChange={this.isChangeAction}
             nowChange={this.state.isChange}
           />
+      </Provider>*/}
+        <AppBar />
+        <ProblemDiv>
+          <ProblemCard value={problemValue} />
+          <HintButton>힌트</HintButton>
+        </ProblemDiv>
+        <Provider store={ObservableStore}>
+          <Blocks
+            grow={1}
+            nowChange={this.state.isChange}
+            value={this.state.value}
+            setValue={this.setValue}
+          />
         </Provider>
-        <div>
-          <Provider store={ObservableStore}>
-            <Blocks
-              grow={1}
-              nowChange={this.state.isChange}
-              value={this.state.value}
-              setValue={this.setValue}
-            />
-          </Provider>
-        </div>
         <div
           className={cx({
             Text: !this.state.isChange
@@ -118,7 +166,7 @@ class SolvingPage extends Component {
               showPrintMargin={true}
               showGutter={true}
               highlightActiveLine={true}
-              height="calc(100vh - 56px)"
+              height="calc(85vh - 56px)"
               width="100%"
               editorProps={{ $blockScrolling: true }}
             />
@@ -139,6 +187,8 @@ class SolvingPage extends Component {
             </Typography>
           </div>
         </Modal>
+        <script type="text/javascript" src="../brython/brython.js" />
+        <script type="text/javascript" src="../brython/brython_stdlib.js" />
       </Div>
     );
   }

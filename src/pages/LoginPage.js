@@ -2,8 +2,7 @@ import React, { Component } from "react";
 import { Redirect } from "react-router-dom";
 import { withStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
-import styled from "styled-components";
-import ReactSVG from "react-svg";
+import styled, { injectGlobal } from "styled-components";
 import logo from "../media/logo.svg";
 const styles = theme => ({
   container: {
@@ -32,12 +31,16 @@ const Div = styled.div`
 `;
 const LogoSvg = styled.div`
   height: 50vh;
-  transform: scale(0.3);
-  margin-right: 15px;
+  width: 100vw;
+  background-image: url(${logo});
+  background-size: 30% 30%;
+  background-repeat: no-repeat;
+  background-position: 48% 50%;
 `;
 const LoginCard = styled.div`
   border-radius: 25px;
-  width: 300px;
+  width: 80%;
+  height: 31%;
   background: #ffffff;
   padding: 20px;
   display: flex;
@@ -61,7 +64,6 @@ const BottomCard = styled.div`
   position: relative;
 `;
 const LoginButton = styled.a`
-  font-family: Youth;
   margin: 10px;
   font-size: 20px;
   padding: 15px;
@@ -88,11 +90,10 @@ const LoginButton = styled.a`
     background-position: right center;
   }
   position: absolute;
-  top: 78%;
+  top: 83%;
   left: 48%;
-  transform: translate(-50%, -30%);
+  transform: translate(-48%, -83%);
 `;
-const TopCard = styled.div``;
 class LoginPage extends Component {
   constructor(props) {
     super(props);
@@ -113,36 +114,30 @@ class LoginPage extends Component {
     }
     return (
       <Div>
-        <div>
-          <TopCard>
-            <LogoSvg>
-              <ReactSVG src={logo} className="logo" />
-            </LogoSvg>
-          </TopCard>
-          <BottomCard />
-          <LoginCard>
-            <TextField
-              placeholder="Enter your Username"
-              label="Username"
-              className={classes.textField}
-              margin="normal"
-              fullWidth
-            />
-            <TextField
-              fullWidth
-              placeholder="Enter your Password"
-              id="password-input"
-              label="Password"
-              className={classes.textField}
-              type="password"
-              autoComplete="current-password"
-              margin="normal"
-            />
-            <br />
-            <br />
-          </LoginCard>
-          <LoginButton onClick={this.handleOnClick}>로그인</LoginButton>
-        </div>
+        <LogoSvg />
+        <BottomCard />
+        <LoginCard>
+          <TextField
+            placeholder="Enter your Username"
+            label="Username"
+            className={classes.textField}
+            margin="normal"
+            fullWidth
+          />
+          <TextField
+            fullWidth
+            placeholder="Enter your Password"
+            id="password-input"
+            label="Password"
+            className={classes.textField}
+            type="password"
+            autoComplete="current-password"
+            margin="normal"
+          />
+          <br />
+          <br />
+        </LoginCard>
+        <LoginButton onClick={this.handleOnClick}>로그인</LoginButton>
       </Div>
     );
   }

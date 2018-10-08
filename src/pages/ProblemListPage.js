@@ -1,14 +1,10 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import styled, { injectGlobal } from "styled-components";
+import styled from "styled-components";
 import firstStep from "../media/2.svg";
 import secondStep from "../media/1.svg";
-import AppBar from "../components/ProbelmListPageAppBar";
-injectGlobal`
-body {
-  padding: 0px;
-}
-`;
+import AppBar from "../components/ProblemListPageAppBar";
+import axios from "axios";
 const StepperList = styled.div`
   width: 100vw;
   margin: 0;
@@ -52,7 +48,6 @@ const Activ = styled.div`
   line-height: 56px;
   display: block;
   text-align: center;
-  font-family: Youth;
 `;
 const AvtivTitle = styled.span`
   color: ${props => {
@@ -63,11 +58,39 @@ const AvtivTitle = styled.span`
     if (props.none) return "10px";
     else return "15px";
   }};
-  font-family: Youth;
   font-weight: 400;
 `;
 class ProblemListPage extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      problemList: null
+    };
+  }
+  componentDidMount() {
+    this.getProblemList();
+  }
+  getProblemList = () => {
+    const url = "http://13.125.181.57:5000/problemList";
+    axios
+      .post(url, {
+        diff: 1,
+        cls: "IO"
+      })
+      .then(response => {
+        this.setState({ problemList: response.data });
+        console.log(response);
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
   render() {
+    /*const problemList = this.state.problemList.map(id => (
+      <li>
+        <Link to={{ pathname: `/problem/${id.PRB_ID}` }} />
+      </li>
+    ));*/
     return (
       <div>
         <AppBar />
@@ -90,24 +113,15 @@ class ProblemListPage extends Component {
           </div>
         </div>
         <ul>
-          <li>
-            <Link to="/problem/1">문제1</Link>
-          </li>
-          <li>
-            <Link to="/problem/2">문제2</Link>
-          </li>
-          <li>
-            <Link to="/problem/3">문제3</Link>
-          </li>
-          <li>
-            <Link to="/problem/4">문제4</Link>
-          </li>
-          <li>
-            <Link to="/problem/5">문제5</Link>
-          </li>
-          <li>
-            <Link to="/problem/6">문제6</Link>
-          </li>
+          {this.state.problemList === null
+            ? ""
+            : this.state.problemList.map((id, index) => (
+                <li>
+                  <Link to={{ pathname: `/problem/${id.PRB_ID}` }}>
+                    {index + 1}
+                  </Link>
+                </li>
+              ))}
           <li>
             <Link to="/textTest">로딩 테스트</Link>
           </li>

@@ -7,15 +7,14 @@ import Typography from "@material-ui/core/Typography";
 import IconButton from "@material-ui/core/IconButton";
 import MenuIcon from "../media/MenuBlack.svg";
 import InfoIcon from "../media/infoBlack.svg";
-import styled, { injectGlobal } from "styled-components";
+import styled from "styled-components";
 const styles = {
   grow: {
     flexGrow: 1,
     textAlign: "center",
-    fontFamily: "Youth",
     fontSize: "25px",
-    marginTop: 4,
-    fontWeight: "bold"
+    fontWeight: "bolder",
+    color: "#595959"
   },
   menuButton: {
     marginLeft: -12,
@@ -27,7 +26,7 @@ const styles = {
   }
 };
 const Root = styled.div`
-  flexgrow: 1;
+  flex-grow: 1;
 `;
 const MenuIconDiv = styled.div`
   background-image: url(${MenuIcon});

@@ -13,10 +13,9 @@ const styles = {
   grow: {
     flexGrow: 1,
     textAlign: "center",
-    fontFamily: "Youth",
     fontSize: "25px",
-    marginTop: 4,
-    fontWeight: "bold"
+    fontWeight: "bolder",
+    color: "#595959"
   },
   menuButton: {
     marginLeft: -12,

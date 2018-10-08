@@ -50,19 +50,16 @@ const Div = styled.div`
 const Title = styled.a`
   color: #231815;
   font-size: 30px;
-  font-family: Youth;
   line-height: 40px;
 `;
 const Value = styled.a`
   width: 596px;
   height: 118px;
   color: #595757;
-  font-family: Youth;
   font-size: 13px;
 `;
 const StartButton = styled.a`
   margin: 10px;
-  font-family: Youth;
   font-size: 20px;
   padding: 15px;
   text-align: center;

@@ -131,7 +131,7 @@ class MainPage extends Component {
     super(props);
     this.state = {
       redirect: false,
-      response: ""
+      url: ""
     };
   }
   handleOnClick = url => {
