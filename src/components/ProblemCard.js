@@ -7,6 +7,7 @@ const ProblemTextBox = styled.div`
   text-align: center;
   word-wrap: break-word;
   word-break: keep-all;
+  color: #595959;
 `;
 const ProblemCardBox = styled.div`
   border-radius: 10px;

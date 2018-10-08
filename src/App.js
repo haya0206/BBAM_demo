@@ -10,7 +10,15 @@ import {
 } from "pages";
 import { injectGlobal } from "styled-components";
 import TransitionGroup from "react-transition-group/TransitionGroup";
+import Youth2 from "./media/Youth.woff2";
+import Youth from "./media/Youth.woff";
 injectGlobal`
+  @font-face {
+    font-family: 'Youth';
+    font-style: normal;
+    font-weight: 400;
+    src: url(${Youth2}) format('woff2'), url(${Youth}) format('woff');
+  }
   body{
     font-family: Youth !important;
     position: fixed; 

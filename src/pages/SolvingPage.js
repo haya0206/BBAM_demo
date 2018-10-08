@@ -4,8 +4,6 @@ import AppBar from "../components/ProblemListPageAppBar";
 import ProblemCard from "../components/ProblemCard";
 import styled from "styled-components";
 import Modal from "@material-ui/core/Modal";
-import Typography from "@material-ui/core/Typography";
-import { withStyles } from "@material-ui/core/styles";
 import { Provider } from "mobx-react";
 import ObservableStore from "../mobx/Store";
 import brace from "brace";
@@ -13,9 +11,12 @@ import AceEditor from "react-ace";
 import style from "./SolvingPage.css";
 import classNames from "classnames/bind";
 import BBAMblocks from "BBAM_Blocks";
+import ChangeIcon from "../media/change.svg";
 import axios from "axios";
 import "brace/mode/python";
-import "brace/theme/monokai";
+import "brace/theme/github";
+import "brace/snippets/python";
+import "brace/ext/language_tools";
 const cx = classNames.bind(style);
 const Div = styled.div`
   flex-grow: 1;
@@ -31,35 +32,50 @@ const ProblemDiv = styled.div`
 `;
 const HintButton = styled.div`
   position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  font-size: 12px;
   top: 90%;
-  left: 90%;
+  left: 85%;
   border-radius: 2px;
   height: 3vh;
   width: 7vh;
   color: #fff;
   background-color: #519cfe;
-  transform: translate(-90%, -90%);
+  transform: translate(-85%, -90%);
 `;
-const styles = theme => ({
-  paper: {
-    position: "absolute",
-    width: theme.spacing.unit * 50,
-    backgroundColor: theme.palette.background.paper,
-    boxShadow: theme.shadows[5],
-    padding: theme.spacing.unit * 4
-  }
-});
-
-function getModalStyle() {
-  const top = 50;
-  const left = 50;
-
-  return {
-    top: `${top}%`,
-    left: `${left}%`,
-    transform: `translate(-${top}%, -${left}%)`
-  };
-}
+const HintModal = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  position: absolute;
+  top: 45%;
+  left: 50%;
+  transform: translate(-50%, -45%);
+  width: 80vw;
+  height: 40vh;
+  background-color: #fff;
+  border-radius: 15px;
+`;
+const HintText = styled.div`
+  width: 90%;
+  text-align: center;
+  word-wrap: break-word;
+  word-break: keep-all;
+  color: #595959;
+`;
+const ChangeButton = styled.div`
+  background-image: url(${ChangeIcon});
+  height: 30px;
+  width: 30px;
+  position: absolute;
+  bottom: 20px;
+  left: 10px;
+  z-index: 40;
+`;
 class SolvingPage extends Component {
   constructor(props) {
     super(props);
@@ -104,6 +120,7 @@ class SolvingPage extends Component {
   fromCode = () => {
     ObservableStore.workspace.clear();
     console.log(this.state.value);
+    if (this.state.value === "") return;
     const xml = BBAMblocks.Python.revert(this.state.value);
     BBAMblocks.Xml.domToWorkspace(
       BBAMblocks.Xml.textToDom(xml),
@@ -141,7 +158,7 @@ class SolvingPage extends Component {
         <AppBar />
         <ProblemDiv>
           <ProblemCard value={problemValue} />
-          <HintButton>힌트</HintButton>
+          <HintButton onClick={this.handleOpen}>힌트</HintButton>
         </ProblemDiv>
         <Provider store={ObservableStore}>
           <Blocks
@@ -149,6 +166,8 @@ class SolvingPage extends Component {
             nowChange={this.state.isChange}
             value={this.state.value}
             setValue={this.setValue}
+            userName={"PSB"}
+            problmeNum={this.props.match.params.id}
           />
         </Provider>
         <div
@@ -159,38 +178,39 @@ class SolvingPage extends Component {
           <Provider store={ObservableStore}>
             <AceEditor
               mode="python"
-              theme="monokai"
+              theme="github"
               value={this.state.value}
               onChange={this.onChange}
               name="UNIQUE_ID_OF_DIV"
               showPrintMargin={true}
-              showGutter={true}
+              showGutter={false}
               highlightActiveLine={true}
+              setOptions={{
+                enableBasicAutocompletion: true,
+                enableLiveAutocompletion: true,
+                enableSnippets: false,
+                showLineNumbers: true,
+                tabSize: 2
+              }}
               height="calc(85vh - 56px)"
               width="100%"
               editorProps={{ $blockScrolling: true }}
             />
           </Provider>
         </div>
+        <ChangeButton onClick={this.isChangeAction} />
         <Modal
           aria-labelledby="simple-modal-title"
           aria-describedby="simple-modal-description"
           open={this.state.open}
           onClose={this.handleClose}
         >
-          <div style={getModalStyle()} className={classes.paper}>
-            <Typography variant="title" id="modal-title">
-              {`문제${this.props.match.params.id}`}
-            </Typography>
-            <Typography variant="subheading" id="simple-modal-description">
-              {`문제${this.props.match.params.id}`}
-            </Typography>
-          </div>
+          <HintModal>
+            <HintText>{problemHint}</HintText>
+          </HintModal>
         </Modal>
-        <script type="text/javascript" src="../brython/brython.js" />
-        <script type="text/javascript" src="../brython/brython_stdlib.js" />
       </Div>
     );
   }
 }
-export default withStyles(styles)(SolvingPage);
+export default SolvingPage;

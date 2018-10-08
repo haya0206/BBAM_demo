@@ -68,7 +68,7 @@ class Blocks extends Component {
     //console.log(this.workspace.getBlockById(event.blockId)) ;
   };
   post = type => {
-    const url = "http://localhost:5000/asdf";
+    const url = "http://13.125.181.57:5000/log";
     const code = BBAMblocks.Python.workspaceToCode(this.props.store.workspace);
     axios
       .post(url, {
