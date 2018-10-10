@@ -7,6 +7,12 @@ import axios from "axios";
 @inject("store")
 @observer
 class Blocks extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      logSeq: 0
+    };
+  }
   componentDidMount() {
     this.workspace = BBAMblocks.inject(this.blocks, {
       comments: true,
@@ -49,9 +55,7 @@ class Blocks extends Component {
     this.workspace.addChangeListener(this.eventListener);
   }
   eventListener = event => {
-    if (event.type === BBAMblocks.Events.BLOCK_CREATE) {
-      this.post("create");
-    } else if (event.type === BBAMblocks.Events.BLOCK_DELETE) {
+    if (event.type === BBAMblocks.Events.BLOCK_DELETE) {
       this.post("delete");
     } else if (event.type === BBAMblocks.Events.BLOCK_CHANGE) {
       this.post("change");
@@ -76,7 +80,8 @@ class Blocks extends Component {
         PID: 1,
         UID: "PSB",
         attribute: "code",
-        code: code
+        code: code,
+        SEQ: this.state.logSeq
       })
       .then(function(response) {
         console.log(response);
@@ -84,6 +89,9 @@ class Blocks extends Component {
       .catch(function(error) {
         console.log(error);
       });
+    this.setState(prevState => ({
+      logSeq: prevState.logSeq + 1
+    }));
   };
   setBlocks(blocks) {
     this.blocks = blocks;

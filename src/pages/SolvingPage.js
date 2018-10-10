@@ -59,6 +59,9 @@ const HintModal = styled.div`
   height: 40vh;
   background-color: #fff;
   border-radius: 15px;
+  &:focus {
+    outline: none;
+  }
 `;
 const HintText = styled.div`
   width: 90%;

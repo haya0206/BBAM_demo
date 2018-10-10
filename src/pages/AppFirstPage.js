@@ -133,6 +133,7 @@ class AppFirstPage extends Component {
         <SwipeableViews
           index={this.state.activeStep}
           onChangeIndex={this.handleStepChange}
+          enableMouseEvents={true}
         >
           {tutorialSteps.map(step => (
             <div>

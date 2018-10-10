@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Redirect } from "react-router-dom";
-import styled, { injectGlobal } from "styled-components";
+import styled from "styled-components";
 import AppBar from "../components/MainPageAppBar";
 import Avatar from "@material-ui/core/Avatar";
 import EmptyAvatar from "../media/emptyAvatar.png";
@@ -8,13 +8,6 @@ import solveIcon from "../media/solveIcon.svg";
 import sandboxIcon from "../media/sandboxIcon.svg";
 import peopleIcon from "../media/peopleIcon.svg";
 import fightIcon from "../media/fightIcon.svg";
-injectGlobal`
-  body{
-    position: fixed; 
-    overflow-y: scroll;
-    width: 100%;
-  }
-`;
 const MainTopGradient = styled.div`
   z-index: -1;
   width: 100vw;
@@ -79,14 +72,12 @@ const TextFiled = styled.div`
 `;
 const Name = styled.p`
   color: #000000;
-  font-family: Youth;
   font-size: 25px;
   font-weight: 400;
   line-height: 20px;
 `;
 const Level = styled.p`
   color: #3592ff;
-  font-family: Youth;
   font-size: 20px;
   font-weight: 400;
   line-height: 20px;
@@ -116,7 +107,6 @@ const MainItemSquere = styled.div`
   background-position: 50% 40%;
 `;
 const MainItemText = styled.div`
-  font-family: Youth;
   font-size: 15px;
   position: absolute;
   top: 90%;

@@ -21,6 +21,7 @@ const ProblemCardBox = styled.div`
   flex-direction: column;
   box-shadow: 5px 5px 20px #aaaaaa;
   font-size: 20px;
+  white-space: pre-wrap;
 `;
 const ProblemCard = props => {
   return (
