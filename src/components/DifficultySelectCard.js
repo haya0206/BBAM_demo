@@ -19,10 +19,10 @@ const DifficultySelectCardBox = styled.div`
   display: flex;
   box-shadow: 3px 3px 20px #aaaaaa;
   margin-top: ${props => {
-    if (props.position === "top") return `20%`;
+    if (props.position === "top") return `75px`;
   }};
   margin-bottom: ${props => {
-    if (props.position === "bottom") return `20%`;
+    if (props.position === "bottom") return `75px`;
   }};
 `;
 const Hr = styled.hr`

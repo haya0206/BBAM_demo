@@ -310,6 +310,7 @@ module.exports = {
       minify: true,
       // For unknown URLs, fallback to the index page
       navigateFallback: publicUrl + "/index.html",
+      maximumFileSizeToCacheInBytes: 10 * 1024 * 1024,
       // Ignores URLs starting from /__ (useful for Firebase):
       // https://github.com/facebookincubator/create-react-app/issues/2237#issuecomment-302693219
       navigateFallbackWhitelist: [/^(?!\/__).*/],

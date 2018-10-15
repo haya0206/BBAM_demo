@@ -10,10 +10,13 @@ class Blocks extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      logSeq: 0
+      logSeq: 1,
+      preSeq: 0,
+      stopTime: 0
     };
   }
   componentDidMount() {
+    const xmltoolbox = this.getXml();
     this.workspace = BBAMblocks.inject(this.blocks, {
       comments: true,
       disable: false,
@@ -22,7 +25,7 @@ class Blocks extends Component {
       readOnly: false,
       rtl: null,
       scrollbars: true,
-      toolbox: null,
+      toolbox: xmltoolbox,
       toolboxPosition: "start",
       horizontalLayout: false,
       trashcan: false,
@@ -52,8 +55,39 @@ class Blocks extends Component {
       this.setToolboxRefreshEnabled(false);
     };
     this.props.store.workspace = this.workspace;
-    this.workspace.addChangeListener(this.eventListener);
+    this.props.store.stop = 0;
+    this.props.store.much = 0;
+    if (this.props.type !== "battle") {
+      this.workspace.addChangeListener(this.eventListener);
+      this.interval = setInterval(() => {
+        console.log(this.state.preSeq, this.state.logSeq);
+        if (this.state.preSeq === this.state.logSeq) {
+          if (this.state.stopTime === 2) {
+            this.props.store.stop = 1;
+          }
+          this.setState(state => ({ stopTime: state.stopTime + 1 }));
+        }
+        if (this.state.logSeq - this.state.preSeq > 15) {
+          this.props.store.much = 1;
+          this.props.store.muchModalOpen = true;
+        }
+        this.setState(state => ({ preSeq: state.logSeq }));
+      }, 5000);
+      if (this.props.problemPreXml !== null) {
+        BBAMblocks.Xml.domToWorkspace(
+          BBAMblocks.Xml.textToDom(this.props.problemPreXml),
+          this.workspace
+        );
+      }
+    }
   }
+  componentWillUnmount() {
+    // use intervalId from the state to clear the interval
+    clearInterval(this.interval);
+  }
+  getXml = () => {
+    return this.props.xml;
+  };
   eventListener = event => {
     if (event.type === BBAMblocks.Events.BLOCK_DELETE) {
       this.post("delete");
@@ -72,13 +106,13 @@ class Blocks extends Component {
     //console.log(this.workspace.getBlockById(event.blockId)) ;
   };
   post = type => {
-    const url = "http://13.125.181.57:5000/log";
+    const url = "https://bbam.tk/log";
     const code = BBAMblocks.Python.workspaceToCode(this.props.store.workspace);
     axios
       .post(url, {
         ETP: type,
-        PID: 1,
-        UID: "PSB",
+        PID: this.props.id,
+        UID: this.props.name,
         attribute: "code",
         code: code,
         SEQ: this.state.logSeq

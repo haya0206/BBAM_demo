@@ -1,12 +1,10 @@
 import React, { Component } from "react";
 import Blocks from "../components/Blocks";
-import AppBar from "../components/ProblemListPageAppBar";
+import AppBar from "../components/MainAppBar";
 import ProblemCard from "../components/ProblemCard";
 import styled from "styled-components";
 import Modal from "@material-ui/core/Modal";
-import { Provider } from "mobx-react";
-import ObservableStore from "../mobx/Store";
-import brace from "brace";
+import { Provider, observer } from "mobx-react";
 import AceEditor from "react-ace";
 import style from "./SolvingPage.css";
 import classNames from "classnames/bind";
@@ -17,6 +15,8 @@ import "brace/mode/python";
 import "brace/theme/github";
 import "brace/snippets/python";
 import "brace/ext/language_tools";
+import CaseCheckCard from "../components/CaseCheckCard";
+import { Link } from "react-router-dom";
 const cx = classNames.bind(style);
 const Div = styled.div`
   flex-grow: 1;
@@ -75,10 +75,43 @@ const ChangeButton = styled.div`
   height: 30px;
   width: 30px;
   position: absolute;
-  bottom: 20px;
+  bottom: 60px;
   left: 10px;
   z-index: 40;
 `;
+const ToMainButton = styled.div`
+  text-decoration: none;
+  width: 100px;
+  height: 30px;
+  border-radius: 15px;
+  background-color: #519cfe;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+const SubmitButton = styled.div`
+  height: 25px;
+  width: 51px;
+  position: absolute;
+  bottom: 20px;
+  left: 1px;
+  z-index: 40;
+  border-radius: 15px;
+  background-color: #519cfe;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  font-size: 15px;
+  color: white;
+`;
+const SolveDiv = styled.div`
+  position: relative;
+  height: calc(100vh - 56px);
+`;
+const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+@observer
 class SolvingPage extends Component {
   constructor(props) {
     super(props);
@@ -87,22 +120,76 @@ class SolvingPage extends Component {
       isChange: false,
       value: "",
       problemValue: "",
-      problemHint: ""
+      problemHint: "",
+      caseCardvisible: false,
+      problemCaseOut: "",
+      problemCaseIn: "",
+      problemXml: "",
+      problemDiff: "",
+      caseList: [],
+      winModalOpen: false,
+      win: null
     };
   }
   componentDidMount() {
-    this.getProblem();
+    const problem = JSON.parse(
+      sessionStorage.getItem(`${this.props.match.params.id}`)
+    );
+    if (problem !== null) {
+      this.setState({
+        problemValue: problem.PRB_CNT,
+        problemHint: problem.PRB_HNT,
+        problemCaseIn: problem.PRB_IN,
+        problemCaseOut: problem.PRB_OUT,
+        problemXml: problem.PRB_XML,
+        problemDiff: problem.PRB_DIFF
+      });
+    } else {
+      this.getProblem();
+    }
+    const { type, startBattle } = this.props;
+    if (type !== undefined) {
+      startBattle().then(() => {
+        this.setState({ winModalOpen: true, win: false });
+      });
+    }
   }
-  getProblem = () => {
-    const url = "http://13.125.181.57:5000/problem";
+  postSubmit = submitInfo => {
+    const url = "https://bbam.tk/submit";
+    console.log(submitInfo);
     axios
       .post(url, {
-        id: this.props.match.params.id
+        PID: submitInfo.PID,
+        crct: submitInfo.crct,
+        xml: submitInfo.xml,
+        UID: submitInfo.UID,
+        time: submitInfo.time,
+        stop: submitInfo.stop,
+        much: submitInfo.much
+      })
+      .then(response => {
+        console.log(response);
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
+  getProblem = () => {
+    const url = "https://bbam.tk/getProblem";
+    axios
+      .post(url, {
+        PID: this.props.match.params.id,
+        UID: userInfo.id
       })
       .then(response => {
         this.setState({
           problemValue: response.data[0].PRB_CNT,
-          problemHint: response.data[0].PRB_HNT
+          problemHint: response.data[0].PRB_HNT,
+          problemCaseIn: response.data[0].PRB_IN,
+          problemCaseOut: response.data[0].PRB_OUT,
+          problemXml: response.data[0].PRB_XML,
+          problemDiff: response.data[0].PRB_DIFF,
+          problemPreXml: response.data[1].UP_XML
         });
         console.log(response);
       })
@@ -120,36 +207,179 @@ class SolvingPage extends Component {
   onChange = newValue => {
     this.setState({ value: newValue });
   };
+  inputPapa = (paCode, paInput) => {
+    if (paInput === null) return paCode;
+    let ret = paCode;
+    let paInputArr = paInput.split(/\s/gm);
+    for (let i = 0; i < paInputArr.length; i++)
+      ret = ret.replace(/input\(\)/, paInputArr[i]);
+    return ret;
+  };
+  onBackButton = () => {
+    this.setState(prevState => ({
+      caseCardvisible: !prevState.caseCardvisible
+    }));
+  };
+  callBrython = (cbCode, cbTimeout) => {
+    window.isDone = false;
+
+    let cc = cbCode;
+    cc = cc.replace(
+      /;[\s]*\n/g,
+      ";\nif(performance.now() - SUPER_MEGA_TICK_TIMER > " +
+        cbTimeout +
+        ") return;\n"
+    );
+    cc = cc.replace(
+      /{[\s]*\n/g,
+      "{\nif(performance.now() - SUPER_MEGA_TICK_TIMER > " +
+        cbTimeout +
+        ") return;\n"
+    );
+    cc = "let SUPER_MEGA_TICK_TIMER = performance.now();" + cc;
+    cc =
+      "(function(){" +
+      cc +
+      "if(performance.now() - SUPER_MEGA_TICK_TIMER > " +
+      cbTimeout +
+      ") return; isDone=true;}());";
+    const script = document.createElement("script");
+
+    script.type = "text/javascript";
+    script.async = true;
+    script.innerHTML = cc;
+
+    document.body.appendChild(script);
+
+    if (!window.isDone) return false;
+
+    return true;
+  };
+  handleSubmit = () => {
+    const { store } = this.props;
+    BBAMblocks.WidgetDiv.hide(true);
+    let code = this.getCode();
+    code = this.inputPapa(code, this.state.problemCaseIn);
+    const getCode = window.__BRYTHON__
+      .py2js(code, "__main__", "__main__")
+      .to_js();
+
+    console.logs.length = 0;
+    let result = "",
+      time = 0;
+    const startTime = new Date();
+    if (this.callBrython(getCode, 2000)) {
+      const endTime = new Date();
+      time = endTime - startTime;
+      result = Array.prototype.slice.call(console.logs).join("");
+    } else {
+      result = "시간초과!";
+      time = 2000;
+    }
+    const xmlText = new XMLSerializer().serializeToString(
+      BBAMblocks.Xml.workspaceToDom(store.workspace)
+    );
+    let submitInfo = null;
+    if (result === this.state.problemCaseOut && time < 2000) {
+      submitInfo = [
+        {
+          UID: userInfo.id,
+          PID: parseInt(this.props.match.params.id, 10),
+          crct: 1,
+          xml: xmlText,
+          time: time,
+          stop: store.stop,
+          much: store.much,
+          result: result,
+          casein: this.state.problemCaseIn,
+          caseout: this.state.problemCaseOut
+        }
+      ];
+    } else {
+      submitInfo = [
+        {
+          UID: userInfo.id,
+          PID: parseInt(this.props.match.params.id, 10),
+          crct: 0,
+          xml: xmlText,
+          time: time,
+          stop: store.stop,
+          much: store.much,
+          result: result,
+          casein: this.state.problemCaseIn,
+          caseout: this.state.problemCaseOut
+        }
+      ];
+    }
+    if (this.props.type === "battle" && submitInfo[0].crct === 1) {
+      this.props.success(store.roomId).then(() => {
+        this.setState({ winModalOpen: true, win: true });
+      });
+    } else if (this.props.type === "battle" && submitInfo[0].crct === 0) {
+      this.setState(prevState => ({
+        caseCardvisible: !prevState.caseCardvisible,
+        caseList: submitInfo
+      }));
+    } else {
+      this.setState(prevState => ({
+        caseCardvisible: !prevState.caseCardvisible
+      }));
+      this.postSubmit(submitInfo[0]);
+      this.setState({
+        caseList: submitInfo
+      });
+    }
+  };
   fromCode = () => {
-    ObservableStore.workspace.clear();
+    const { store } = this.props;
+    store.workspace.clear();
     console.log(this.state.value);
     if (this.state.value === "") return;
     const xml = BBAMblocks.Python.revert(this.state.value);
+    this.xmlToWorkspace(xml);
+  };
+  xmlToWorkspace = xml => {
+    const { store } = this.props;
     BBAMblocks.Xml.domToWorkspace(
       BBAMblocks.Xml.textToDom(xml),
-      ObservableStore.workspace
+      store.workspace
     );
   };
   setValue = text => {
     this.setState({ value: text });
   };
+  getCode = () => {
+    const { store } = this.props;
+    return BBAMblocks.Python.workspaceToCode(store.workspace);
+  };
   isChangeAction = () => {
+    const { store } = this.props;
     this.setState({ isChange: !this.state.isChange });
-    ObservableStore.workspace.setVisible(this.state.isChange);
+    store.workspace.setVisible(this.state.isChange);
     this.state.isChange === false
-      ? this.setValue(
-          BBAMblocks.Python.workspaceToCode(ObservableStore.workspace)
-        )
+      ? this.setValue(this.getCode())
       : this.fromCode();
   };
-
+  handleMuchModalClose = () => {
+    this.props.store.muchModalOpen = false;
+  };
   render() {
-    const { classes } = this.props;
-    const { problemHint, problemValue } = this.state;
+    const {
+      problemHint,
+      problemValue,
+      caseCardvisible,
+      problemXml,
+      problemDiff,
+      caseList,
+      problemPreXml,
+      win
+    } = this.state;
+    const { store } = this.props;
+    const { type } = this.props;
     return (
       <Div>
         {/*
-        <Provider store={ObservableStore}>
+        <Provider store={store}>
           <SimpleAppBar
             ida={this.props.match.params.id}
             history={this.props.history}
@@ -158,49 +388,73 @@ class SolvingPage extends Component {
             nowChange={this.state.isChange}
           />
       </Provider>*/}
-        <AppBar />
-        <ProblemDiv>
-          <ProblemCard value={problemValue} />
-          <HintButton onClick={this.handleOpen}>힌트</HintButton>
-        </ProblemDiv>
-        <Provider store={ObservableStore}>
-          <Blocks
-            grow={1}
-            nowChange={this.state.isChange}
-            value={this.state.value}
-            setValue={this.setValue}
-            userName={"PSB"}
-            problmeNum={this.props.match.params.id}
+        <AppBar
+          backArrow={true}
+          link={`/problemList/2/${problemDiff}/${this.props.match.params.id}`}
+        />
+        <SolveDiv>
+          <CaseCheckCard
+            difficultyNum={problemDiff}
+            caseList={caseList}
+            visible={caseCardvisible}
+            onBackButton={this.onBackButton}
+            problemNum={this.props.match.params.id}
           />
-        </Provider>
-        <div
-          className={cx({
-            Text: !this.state.isChange
-          })}
-        >
-          <Provider store={ObservableStore}>
-            <AceEditor
-              mode="python"
-              theme="github"
-              value={this.state.value}
-              onChange={this.onChange}
-              name="UNIQUE_ID_OF_DIV"
-              showPrintMargin={true}
-              showGutter={false}
-              highlightActiveLine={true}
-              setOptions={{
-                enableBasicAutocompletion: true,
-                enableLiveAutocompletion: true,
-                enableSnippets: false,
-                showLineNumbers: true,
-                tabSize: 2
-              }}
-              height="calc(85vh - 56px)"
-              width="100%"
-              editorProps={{ $blockScrolling: true }}
-            />
-          </Provider>
-        </div>
+          <ProblemDiv>
+            <ProblemCard value={problemValue} />
+            {store.stop === 1 ? (
+              <HintButton onClick={this.handleOpen}>힌트</HintButton>
+            ) : (
+              <div />
+            )}
+          </ProblemDiv>
+          {problemXml === "" ? (
+            <div>loading...</div>
+          ) : (
+            <Provider store={store}>
+              <Blocks
+                grow={1}
+                nowChange={this.state.isChange}
+                value={this.state.value}
+                setValue={this.setValue}
+                id={this.props.match.params.id}
+                name={userInfo.name}
+                xml={problemXml}
+                preXml={problemPreXml}
+                type={type}
+              />
+            </Provider>
+          )}
+          <div
+            className={cx({
+              Text: !this.state.isChange
+            })}
+          >
+            <Provider store={store}>
+              <AceEditor
+                mode="python"
+                theme="github"
+                value={this.state.value}
+                onChange={this.onChange}
+                name="UNIQUE_ID_OF_DIV"
+                showPrintMargin={true}
+                showGutter={false}
+                highlightActiveLine={true}
+                setOptions={{
+                  enableBasicAutocompletion: true,
+                  enableLiveAutocompletion: true,
+                  enableSnippets: false,
+                  showLineNumbers: true,
+                  tabSize: 2
+                }}
+                height="calc(85vh - 56px)"
+                width="100%"
+                editorProps={{ $blockScrolling: true }}
+              />
+            </Provider>
+          </div>
+        </SolveDiv>
+        <SubmitButton onClick={this.handleSubmit}>제출</SubmitButton>
         <ChangeButton onClick={this.isChangeAction} />
         <Modal
           aria-labelledby="simple-modal-title"
@@ -210,6 +464,51 @@ class SolvingPage extends Component {
         >
           <HintModal>
             <HintText>{problemHint}</HintText>
+          </HintModal>
+        </Modal>
+        <Modal
+          aria-labelledby="simple-modal-title"
+          aria-describedby="simple-modal-description"
+          open={this.state.winModalOpen}
+        >
+          {win === null ? (
+            <div />
+          ) : win === true ? (
+            <HintModal>
+              <div style={{ fontSize: "30px" }}>승리!</div>
+              <Link
+                style={{ textDecoration: "none", marginTop: "50px" }}
+                to={{ pathname: `/mainpage` }}
+              >
+                <ToMainButton>목록으로</ToMainButton>
+              </Link>
+            </HintModal>
+          ) : (
+            <HintModal>
+              <div style={{ fontSize: "30px" }}>패배..</div>
+              <Link
+                style={{ textDecoration: "none", marginTop: "50px" }}
+                to={{ pathname: `/mainpage` }}
+              >
+                <ToMainButton>목록으로</ToMainButton>
+              </Link>
+            </HintModal>
+          )}
+        </Modal>
+        <Modal
+          aria-labelledby="simple-modal-title"
+          aria-describedby="simple-modal-description"
+          open={store.muchModalOpen}
+          onClose={this.handleMuchModalClose}
+        >
+          <HintModal>
+            <div style={{ fontSize: "20px" }}>너무 많이 움직입니다!</div>
+            <ToMainButton
+              style={{ marginTop: "50px" }}
+              onClick={this.handleMuchModalClose}
+            >
+              돌아가기
+            </ToMainButton>
           </HintModal>
         </Modal>
       </Div>

@@ -15,7 +15,8 @@ const styles = {
     textAlign: "center",
     fontSize: "25px",
     fontWeight: "bolder",
-    color: "#595959"
+    color: "#595959",
+    fontFamily: "Youth"
   },
   menuButton: {
     marginLeft: -12,
@@ -37,7 +38,7 @@ const MenuIconDiv = styled.div`
 const InfoIconDiv = styled.div`
   background-image: url(${InfoIcon});
   height: 23px;
-  width: 23px;
+  width: 22.5px;
 `;
 class MenuAppBar extends React.Component {
   render() {

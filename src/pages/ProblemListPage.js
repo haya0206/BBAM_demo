@@ -1,9 +1,8 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
 import styled from "styled-components";
 import firstStep from "../media/2.svg";
 import secondStep from "../media/1.svg";
-import AppBar from "../components/ProblemListPageAppBar";
+import AppBar from "../components/MainAppBar";
 import axios from "axios";
 import SwipeableViews from "react-swipeable-views";
 import DifficultySelectSwipe from "../components/DifficultySelectSwipe";
@@ -75,6 +74,7 @@ const Bar = styled.hr`
   border: 0;
   height: 2px;
 `;
+const userInfo = JSON.parse(localStorage.getItem("userInfo"));
 class ProblemListPage extends Component {
   constructor(props) {
     super(props);
@@ -86,15 +86,53 @@ class ProblemListPage extends Component {
       problemValue: "",
       problemName: ""
     };
+    this.goBack = this.goBack.bind(this);
   }
+  componentWillMount() {
+    const id = this.getId();
+    const number = parseInt(id.number, 10);
+    const difficultyNum = parseInt(id.difficultyNum, 10);
+    const problemNum = parseInt(id.problemNum, 10);
+    this.setState({ number, difficultyNum, problemNum });
+    if (difficultyNum !== 0) {
+      const problemList = JSON.parse(
+        sessionStorage.getItem(`problemList ${difficultyNum}`)
+      );
+      if (problemList !== null) {
+        this.setState({ problemList });
+      } else this.getProblemList(difficultyNum);
+    }
+    if (problemNum !== 0 && difficultyNum !== 0) {
+      const problem = JSON.parse(sessionStorage.getItem(`${problemNum}`));
+      if (problem !== null) {
+        this.setState({
+          problemNum,
+          problemName: problem.PRB_NM,
+          problemValue: problem.PRB_CNT
+        });
+      } else {
+        this.getProblem(problemNum, problem.PRB_NM);
+      }
+    }
+  }
+  getId = () => {
+    return this.props.match.params;
+  };
+  goBack = () => {
+    this.props.history.push("/mainpage");
+  };
   getProblemList = num => {
-    const url = "http://13.125.181.57:5000/problemList";
+    const url = "https://bbam.tk/getProblemList";
     axios
       .post(url, {
         diff: num
       })
       .then(response => {
         this.setState({ problemList: response.data });
+        sessionStorage.setItem(
+          `problemList ${num}`,
+          JSON.stringify(response.data)
+        );
         console.log(response);
       })
       .catch(error => {
@@ -103,16 +141,19 @@ class ProblemListPage extends Component {
     this.setState({ difficultyNum: num });
   };
   getProblem = (num, name) => {
-    const url = "http://13.125.181.57:5000/problem";
-    const { problemNum } = this.state;
+    const url = "https://bbam.tk/getProblem";
+    const userInfo = JSON.parse(localStorage.getItem("userInfo"));
     axios
       .post(url, {
-        id: num
+        PID: num,
+        UID: userInfo.id
       })
       .then(response => {
         this.setState({
-          problemValue: response.data[0].PRB_CNT
+          problemValue: response.data[0].PRB_CNT,
+          problemName: name
         });
+        sessionStorage.setItem(`${num}`, JSON.stringify(response.data[0]));
         console.log(response);
       })
       .catch(error => {
@@ -124,28 +165,39 @@ class ProblemListPage extends Component {
     this.setState({ number });
   };
   handleNext = (num, name = "") => {
+    if (this.state.number === 0) {
+      const problemList = JSON.parse(sessionStorage.getItem("problemList"));
+      if (problemList !== null) {
+        this.setState({ problemList, difficultyNum: num });
+      } else this.getProblemList(num);
+    }
+    if (this.state.number === 1) {
+      const problem = JSON.parse(sessionStorage.getItem(`${num}`));
+      if (problem !== null) {
+        this.setState({
+          problemNum: num,
+          problemName: name,
+          problemValue: problem.PRB_CNT
+        });
+      } else {
+        this.getProblem(num, name);
+      }
+    }
     this.setState(prevState => ({
       number: prevState.number + 1
     }));
-    if (this.state.number === 0) {
-      this.getProblemList(num);
-    }
-    if (this.state.number === 1) {
-      this.getProblem(num, name);
-    }
   };
 
   handleBack = () => {
-    this.setState(prevState => ({
-      number: prevState.number - 1
-    }));
+    if (this.state.number === 0) {
+      this.goBack();
+    } else {
+      this.setState(prevState => ({
+        number: prevState.number - 1
+      }));
+    }
   };
   render() {
-    /*const problemList = this.state.problemList.map(id => (
-      <li>
-        <Link to={{ pathname: `/problem/${id.PRB_ID}` }} />
-      </li>
-    ));*/
     const {
       number,
       difficultyNum,
@@ -158,7 +210,7 @@ class ProblemListPage extends Component {
     const lastRecord = [0, 0, 0];
     return (
       <div>
-        <AppBar />
+        <AppBar backArrow={true} handleBack={this.handleBack} />
         <div>
           <StepperList>
             <StepperListItem left>
@@ -205,22 +257,6 @@ class ProblemListPage extends Component {
             problemNum={problemNum}
           />
         </SwipeableViews>
-        {/*
-        <ul>
-          {this.state.problemList === null
-            ? ""
-            : this.state.problemList.map((id, index) => (
-                <li>
-                  <Link to={{ pathname: `/problem/${id.PRB_ID}` }}>
-                    {index + 1}
-                  </Link>
-                </li>
-              ))}
-          <li>
-            <Link to="/textTest">로딩 테스트</Link>
-          </li>
-        </ul>
-            */}
       </div>
     );
   }

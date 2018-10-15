@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Redirect } from "react-router-dom";
+import { Redirect, withRouter } from "react-router-dom";
 import styled from "styled-components";
 import AppBar from "../components/MainPageAppBar";
 import Avatar from "@material-ui/core/Avatar";
@@ -8,6 +8,9 @@ import solveIcon from "../media/solveIcon.svg";
 import sandboxIcon from "../media/sandboxIcon.svg";
 import peopleIcon from "../media/peopleIcon.svg";
 import fightIcon from "../media/fightIcon.svg";
+import Modal from "@material-ui/core/Modal";
+import axios from "axios";
+import { observer } from "mobx-react";
 const MainTopGradient = styled.div`
   z-index: -1;
   width: 100vw;
@@ -77,7 +80,7 @@ const Name = styled.p`
   line-height: 20px;
 `;
 const Level = styled.p`
-  color: #3592ff;
+  color: #636363;
   font-size: 20px;
   font-weight: 400;
   line-height: 20px;
@@ -116,23 +119,123 @@ const MainItemText = styled.div`
 const Div = styled.div`
   height: 100vh;
 `;
+const ModalDiv = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  position: absolute;
+  top: 45%;
+  left: 50%;
+  transform: translate(-50%, -45%);
+  width: 80vw;
+  height: 40vh;
+  background-color: #fff;
+  border-radius: 15px;
+  &:focus {
+    outline: none;
+  }
+`;
+const UserRankRating = styled.div`
+  font-size: 13px;
+  color: #b2b2b2;
+  float: left;
+`;
+const UserTitle = styled.div`
+  font-size: 23px;
+  color: #000000;
+`;
+const UserAvatar = styled(Avatar)`
+  width: 60px !important;
+  height: 60px !important;
+  float: left;
+`;
+const Button = styled.div`
+  width: 84px;
+  border-radius: 11px;
+  height: 30px;
+  font-size: 18px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  ${props => {
+    if (props.yes) {
+      return `background-color: #519CFE;
+  color: #ffffff;`;
+    } else {
+      return `border: 1.5px solid #519CFE;color: #519CFE; `;
+    }
+  }};
+`;
+const CenterAlignDiv = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 100%;
+`;
+@observer
 class MainPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
       redirect: false,
-      url: ""
+      url: "",
+      user: null
     };
+  }
+  componentWillMount() {
+    const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+    const url = "https://bbam.tk/mainPage";
+    axios
+      .post(url, {
+        ID: userInfo.id
+      })
+      .then(response => {
+        const user = {
+          ...userInfo,
+          level: response.data[0].GM_LV,
+          exp: response.data[0].GM_EXP,
+          rating: response.data[0].GM_RTN,
+          rank: 1
+        };
+        console.log(user);
+        localStorage.setItem(`userInfo`, JSON.stringify(user));
+        this.props
+          .login({ id: user.id, name: user.name, rating: user.rating, rank: 1 })
+          .then(problemNum => {
+            this.props.history.push(
+              `/battlepage/${this.props.store.roomId}/${problemNum}`
+            );
+          });
+        this.setState({ user });
+
+        console.log(response);
+      })
+      .catch(error => {
+        console.log(error);
+      });
+
+    //socket.emit("userConnect", { id: userInfo.id, name: userInfo.name });
   }
   handleOnClick = url => {
     // some action...
     // then redirect
     this.setState({ redirect: true, url: url });
   };
+  handleClose = () => {
+    this.props.toInvite(this.props.store.inviteUser, false);
+  };
+  handleBattle = () => {
+    this.props.toInvite(this.props.store.inviteUser, true);
+  };
   render() {
     if (this.state.redirect) {
       return <Redirect push to={this.state.url} />;
     }
+    const { store } = this.props;
+    const { user } = this.state;
     return (
       <Div>
         <MainTopGradient />
@@ -145,8 +248,15 @@ class MainPage extends Component {
           <MainAppBar />
           <MainAvatar alt="Remy Sharp" src={EmptyAvatar} />
           <TextFiled>
-            <Name>empty</Name>
-            <Level>LV.0</Level>
+            <Name>{user === null ? "Loading" : user.name}</Name>
+            <Level>
+              LV.
+              {user === null ? "Loading" : user.level}
+            </Level>
+            <Level>
+              EXP:
+              {user === null ? "Loading" : ` ${user.exp}`}
+            </Level>
           </TextFiled>
         </div>
         <div
@@ -158,7 +268,7 @@ class MainPage extends Component {
           <MainItemSquere
             TopLeft
             onClick={() => {
-              this.handleOnClick("/problemList");
+              this.handleOnClick("/problemList/0/0/0");
             }}
           >
             <MainItemText>문제풀이</MainItemText>
@@ -169,12 +279,50 @@ class MainPage extends Component {
           <MainItemSquere BottomLeft style={{ clear: "left" }}>
             <MainItemText>커뮤니티</MainItemText>
           </MainItemSquere>
-          <MainItemSquere BottomRight>
+          <MainItemSquere
+            BottomRight
+            onClick={() => {
+              this.handleOnClick("/battle");
+            }}
+          >
             <MainItemText>전국대전</MainItemText>
           </MainItemSquere>
         </div>
+        <Modal
+          aria-labelledby="simple-modal-title"
+          aria-describedby="simple-modal-description"
+          open={store.isInviting}
+          onClose={this.handleClose}
+        >
+          <ModalDiv>
+            {store.inviteUser !== null ? (
+              <CenterAlignDiv>
+                <UserAvatar alt="Remy Sharp" src={EmptyAvatar} />
+                <UserTitle>{`${store.inviteUser.name}`}</UserTitle>
+                {/* <UserRankRating>{`랭킹 ${user.inviteUser.rank}위 승점 ${
+                  user.inviteUser.rating
+                }점`}</UserRankRating> */}
+              </CenterAlignDiv>
+            ) : (
+              ""
+            )}
+            <div>대전을 수락하시겠습니까?</div>
+            <CenterAlignDiv
+              style={{
+                marginTop: "40px",
+                flexDirection: "row",
+                justifyContent: "space-around"
+              }}
+            >
+              <Button onClick={this.handleBattle} yes>
+                네
+              </Button>
+              <Button onClick={this.handleClose}>아니요</Button>
+            </CenterAlignDiv>
+          </ModalDiv>
+        </Modal>
       </Div>
     );
   }
 }
-export default MainPage;
+export default withRouter(MainPage);

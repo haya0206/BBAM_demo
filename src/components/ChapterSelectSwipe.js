@@ -37,8 +37,12 @@ const Problem = styled.div`
   position: relative;
   width: 100%;
   height: 5%;
+  ${props => {
+    if (props.last === true) return "margin-bottom: 15%";
+  }};
 `;
 const ProblemList = styled.div`
+  overflow: auto;
   margin-top: 10%;
 `;
 const ProblemTitle = styled.div`
@@ -89,13 +93,15 @@ const ChapterSelectSwipe = props => {
       <ProblemList>
         {problemList === null
           ? ""
-          : problemList.map((id, index) => (
+          : problemList.map((id, index, list) => (
               <Problem
                 onClick={() => {
-                  handleNext(id.PRB_ID, id.PRB_ID);
+                  handleNext(id.PRB_ID, id.PRB_NM);
                 }}
+                key={index}
+                last={index + 1 === list.length ? true : false}
               >
-                <ProblemTitle>{id.PRB_ID}</ProblemTitle>
+                <ProblemTitle>{`${id.PRB_NM}`}</ProblemTitle>
                 <ProblemCheck>
                   <CheckIconDiv />
                   문제풀이 가능
