@@ -337,7 +337,7 @@ class SolvingPage extends Component {
     store.workspace.clear();
     console.log(this.state.value);
     if (this.state.value === "") return;
-    const xml = BBAMblocks.Python.revert(this.state.value);
+    const xml = BBAMblocks.Python.rebert(this.state.value);
     this.xmlToWorkspace(xml);
   };
   xmlToWorkspace = xml => {
