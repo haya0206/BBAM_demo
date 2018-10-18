@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import { Redirect } from "react-router-dom";
 import MobileStepper from "@material-ui/core/MobileStepper";
 import SwipeableViews from "react-swipeable-views";
 import Solve from "../media/solve.json";
@@ -97,6 +96,7 @@ class AppFirstPage extends Component {
       response: "",
       activeStep: 0
     };
+    this.goTo = this.goTo.bind(this);
   }
 
   handleNext = () => {
@@ -117,17 +117,15 @@ class AppFirstPage extends Component {
     this.setState({ activeStep });
   };
   handleOnClick = () => {
-    // some action...
-    // then redirect
-    this.setState({ redirect: true });
+    this.goTo();
+  };
+  goTo = () => {
+    this.props.history.push("/mainpage");
   };
   render() {
     const { activeStep } = this.state;
 
     const maxSteps = tutorialSteps.length;
-    if (this.state.redirect) {
-      return <Redirect push to="/mainpage" />;
-    }
     return (
       <div>
         <SwipeableViews

@@ -1,25 +1,11 @@
 import React, { Component } from "react";
-import { Redirect } from "react-router-dom";
 import { withStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import styled from "styled-components";
 import logo from "../media/logo.svg";
 import axios from "axios";
-const styles = theme => ({
-  container: {
-    display: "flex",
-    flexWrap: "wrap"
-  },
-  textField: {
-    width: 200
-  },
-  button: {
-    margin: theme.spacing.unit
-  },
-  menu: {
-    width: 200
-  }
-});
+import { CSSTransition } from "react-transition-group";
+import "./LoginPage.css"
 const Div = styled.div`
   height: 100vh;
   display: flex;
@@ -110,6 +96,7 @@ class LoginPage extends Component {
       password: "",
       re: false
     };
+    this.goTo = this.goTo.bind(this);
   }
   componentDidMount() {
     /*const data = localStorage.getItem("userInfo");
@@ -118,28 +105,6 @@ class LoginPage extends Component {
     }*/
   }
   handleOnClick = () => {
-    // some action...
-    // then redirect
-    /*const url = "https://bbam.tk/getProblem";
-    axios
-      .post(url, {
-        PID: this.props.match.params.id,
-        UID: "PSB"
-      })
-      .then(response => {
-        this.setState({
-          problemValue: response.data[0].PRB_CNT,
-          problemHint: response.data[0].PRB_HNT,
-          problemCaseIn: response.data[0].PRB_IN,
-          problemCaseOut: response.data[0].PRB_OUT,
-          problemXml: response.data[0].PRB_XML,
-          problemDiff: response.data[0].PRB_DIFF
-        });
-        console.log(response);
-      })
-      .catch(error => {
-        console.log(error);
-      });*/
     const url = "https://bbam.tk/login";
     axios
       .post(url, {
@@ -152,12 +117,15 @@ class LoginPage extends Component {
           JSON.stringify({ id: this.state.id, name: this.state.id })
         );
         console.log(response);
-        this.setState({ redirect: true });
+        this.goTo();
       })
       .catch(error => {
         this.setState({ re: true });
         console.log(error);
       });
+  };
+  goTo = () => {
+    this.props.history.push("/appfirst");
   };
   handleChange = name => event => {
     this.setState({
@@ -166,48 +134,45 @@ class LoginPage extends Component {
   };
   render() {
     const { classes } = this.props;
-    if (this.state.redirect) {
-      return <Redirect push to="/appfirst" />;
-    }
     return (
       <Div>
         <LogoSvg />
         <BottomCard />
-        <LoginCard>
-          <Text>
-            <TextField
-              value={this.state.id}
-              onChange={this.handleChange("id")}
-              placeholder="Enter your Username"
-              label="Username"
-              className={classes.textField}
-              margin="normal"
-              fullWidth
-            />
-            <TextField
-              fullWidth
-              value={this.state.password}
-              onChange={this.handleChange("password")}
-              placeholder="Enter your Password"
-              id="password-input"
-              label="Password"
-              className={classes.textField}
-              type="password"
-              autoComplete="current-password"
-              margin="normal"
-            />
-          </Text>
-          {this.state.re === false ? (
-            <div />
-          ) : (
-            <div style={{ color: "#ff1616" }}>
-              아이디 또는 비밀번호를 다시 확인하세요.
-            </div>
-          )}
-        </LoginCard>
+          <LoginCard>
+            <Text>
+              <TextField
+                value={this.state.id}
+                onChange={this.handleChange("id")}
+                placeholder="Enter your Username"
+                label="Username"
+                style={{ width: 200 }}
+                margin="normal"
+                fullWidth
+              />
+              <TextField
+                fullWidth
+                value={this.state.password}
+                onChange={this.handleChange("password")}
+                placeholder="Enter your Password"
+                id="password-input"
+                label="Password"
+                style={{ width: 200 }}
+                type="password"
+                autoComplete="current-password"
+                margin="normal"
+              />
+            </Text>
+            {this.state.re === false ? (
+              <div />
+            ) : (
+              <div style={{ color: "#ff1616" }}>
+                아이디 또는 비밀번호를 다시 확인하세요.
+              </div>
+            )}
+          </LoginCard>
         <LoginButton onClick={this.handleOnClick}>로그인</LoginButton>
       </Div>
     );
   }
 }
-export default withStyles(styles)(LoginPage);
+export default LoginPage;

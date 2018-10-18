@@ -99,15 +99,23 @@ const CenterAlignDiv = styled.div`
   flex-direction: column;
   width: 100%;
 `;
-const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+
 class BattlePage extends Component {
   constructor(props) {
     super(props);
-    this.state = { open: false, user: null, isBattle: false, isAllowed: true };
+    this.state = {
+      open: false,
+      user: null,
+      isBattle: false,
+      isAllowed: true,
+      userInfo: null
+    };
     this.goBack = this.goBack.bind(this);
     this.goTo = this.goTo.bind(this);
   }
   componentDidMount() {
+    const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+    this.setState({ userInfo });
     this.props.list();
   }
   handleBack = () => {
@@ -142,20 +150,24 @@ class BattlePage extends Component {
     });
   };
   render() {
-    const { user, isBattle, isAllowed } = this.state;
+    const { user, isBattle, isAllowed, userInfo } = this.state;
     const { store } = this.props;
     return (
       <Div>
         <AppBar backArrow={true} handleBack={this.handleBack} />
         <UserStatus>
           <TextBox>
-            <Title>{userInfo.name}</Title>
+            <Title>{userInfo === null ? "Loading" : userInfo.name}</Title>
             <Level>
               LV.
-              {userInfo.level}
+              {userInfo === null ? "Loading" : userInfo.Level}
             </Level>
-            <Ranking>랭킹 {userInfo.rank}위</Ranking>
-            <Rating>승점 {userInfo.rating}</Rating>
+            <Ranking>
+              랭킹 {userInfo === null ? "Loading" : userInfo.rank}위
+            </Ranking>
+            <Rating>
+              승점 {userInfo === null ? "Loading" : userInfo.rating}
+            </Rating>
           </TextBox>
         </UserStatus>
         <SelectDiv handleOpen={this.handleOpen} store={store} />>

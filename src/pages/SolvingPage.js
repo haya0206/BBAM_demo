@@ -128,7 +128,8 @@ class SolvingPage extends Component {
       problemDiff: "",
       caseList: [],
       winModalOpen: false,
-      win: null
+      win: null,
+      submitData: null
     };
   }
   componentDidMount() {
@@ -168,6 +169,7 @@ class SolvingPage extends Component {
         much: submitInfo.much
       })
       .then(response => {
+        this.setState({ submitData: response.data });
         console.log(response);
       })
       .catch(error => {
@@ -350,6 +352,9 @@ class SolvingPage extends Component {
   };
   getCode = () => {
     const { store } = this.props;
+    if (this.state.isChange === true) {
+      return this.state.value;
+    }
     return BBAMblocks.Python.workspaceToCode(store.workspace);
   };
   isChangeAction = () => {
@@ -372,7 +377,8 @@ class SolvingPage extends Component {
       problemDiff,
       caseList,
       problemPreXml,
-      win
+      win,
+      submitData
     } = this.state;
     const { store } = this.props;
     const { type } = this.props;
@@ -399,6 +405,7 @@ class SolvingPage extends Component {
             visible={caseCardvisible}
             onBackButton={this.onBackButton}
             problemNum={this.props.match.params.id}
+            submitData={submitData}
           />
           <ProblemDiv>
             <ProblemCard value={problemValue} />

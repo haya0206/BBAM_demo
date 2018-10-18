@@ -184,6 +184,7 @@ class MainPage extends Component {
       url: "",
       user: null
     };
+    this.goTo = this.goTo.bind(this);
   }
   componentWillMount() {
     const userInfo = JSON.parse(localStorage.getItem("userInfo"));
@@ -222,7 +223,10 @@ class MainPage extends Component {
   handleOnClick = url => {
     // some action...
     // then redirect
-    this.setState({ redirect: true, url: url });
+    this.goTo(url);
+  };
+  goTo = (url) => {
+    this.props.history.push(`${url}`);
   };
   handleClose = () => {
     this.props.toInvite(this.props.store.inviteUser, false);
@@ -231,9 +235,6 @@ class MainPage extends Component {
     this.props.toInvite(this.props.store.inviteUser, true);
   };
   render() {
-    if (this.state.redirect) {
-      return <Redirect push to={this.state.url} />;
-    }
     const { store } = this.props;
     const { user } = this.state;
     return (

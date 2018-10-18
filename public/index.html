@@ -38,7 +38,9 @@
       To begin the development, run `npm start` or `yarn start`.
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
+  <script crossorigin type="text/javascript" src="https://cdn.rawgit.com/brython-dev/brython/3.6.2/www/src/brython.js"></script>
   <script>
+    brython();
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', function () {
         navigator.serviceWorker.register('/service-worker.js');
@@ -53,7 +55,7 @@
       console.logs.push(Array.from(arguments));
     }
   </script>
-  <script crossorigin type="text/javascript" src="https://cdn.rawgit.com/brython-dev/brython/3.6.2/www/src/brython.js">
+
 
 
 

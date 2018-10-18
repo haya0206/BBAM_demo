@@ -1,0 +1,17 @@
+.fadeTranslate-enter {
+    opacity: 0.01;
+}
+
+.fadeTranslate-enter.fadeTranslate-enter-active {
+    opacity: 1;
+    transition: opacity 300ms ease-in;
+}
+
+.fadeTranslate-exit {
+    opacity: 1;
+}
+
+.fadeTranslate-exit.fadeTranslate-exit-active {
+    opacity: 0.01;
+    transition: opacity 300ms ease-in;
+}

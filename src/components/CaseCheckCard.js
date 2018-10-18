@@ -4,6 +4,8 @@ import CheckIcon from "../media/check.svg";
 import ErrorIcon from "../media/error.svg";
 import { Link } from "react-router-dom";
 import Modal from "@material-ui/core/Modal";
+import CircularProgressbar from "react-circular-progressbar";
+import "react-circular-progressbar/dist/styles.css";
 const Div = styled.div`
   position: absolute;
   width: 100%;
@@ -159,6 +161,17 @@ const TextFild = styled.div`
   flex-direction: column;
   margin-top: 30px;
 `;
+const CircularProgressbarText = styled.div`
+  display: flex;
+  justify-content: center;
+  width: 70px;
+  font-size: 15px;
+  color: #3e98c7;
+`;
+const CircularProgressbarCustom = styled(CircularProgressbar)`
+  width: 70px !important;
+  height: 70px;
+`;
 class CaseCheckCard extends Component {
   constructor(props) {
     super(props);
@@ -179,7 +192,8 @@ class CaseCheckCard extends Component {
       caseList,
       difficultyNum,
       problemNum,
-      onBackButton
+      onBackButton,
+      submitData
     } = this.props;
     const difficulty = ["아무것도 업지롱", "초급", "중급", "고급"];
     const { caseData, open } = this.state;
@@ -235,6 +249,59 @@ class CaseCheckCard extends Component {
         </Link>*/}
           </ProblemList>
         </List>
+        <div
+          style={{
+            position: "absolute",
+            top: "85%",
+            left: "50%",
+            transform: "translate(-50%, -85%)"
+          }}
+        >
+          {submitData === null || submitData.LENGTH === undefined ? (
+            <div />
+          ) : (
+            <div style={{ display: "flex", justifyContent: "space-around" }}>
+              <CircularProgressbarText>Length</CircularProgressbarText>
+              <CircularProgressbarText>Much</CircularProgressbarText>
+              <CircularProgressbarText>Repeat</CircularProgressbarText>
+              <CircularProgressbarText>Stop</CircularProgressbarText>
+              <CircularProgressbarText>Time</CircularProgressbarText>
+            </div>
+          )}
+          {submitData === null || submitData.LENGTH === undefined ? (
+            <div />
+          ) : (
+            <div style={{ display: "flex", justifyContent: "space-around" }}>
+              <CircularProgressbarCustom
+                initialAnimation={true}
+                percentage={submitData.LENGTH * 6.666}
+                text={`${submitData.LENGTH === 0 ? 0 : 100}점`}
+              />
+              <CircularProgressbarCustom
+                initialAnimation={true}
+                percentage={submitData.MUCH * 6.666}
+                text={`${submitData.MUCH === 0 ? 0 : 100}점`}
+              />
+              <CircularProgressbarCustom
+                initialAnimation={true}
+                percentage={submitData.REPEAT * 5}
+                text={`${submitData.REPEAT === 0 ? 0 : 100}점`}
+              />
+              <CircularProgressbarCustom
+                bottom
+                initialAnimation={true}
+                percentage={submitData.STOP * 5}
+                text={`${submitData.STOP === 0 ? 0 : 100}점`}
+              />
+              <CircularProgressbarCustom
+                bottom
+                initialAnimation={true}
+                percentage={submitData.TIME * 3.333}
+                text={`${submitData.TIME === 0 ? 0 : 100}점`}
+              />
+            </div>
+          )}
+        </div>
         <ButtonDiv>
           <Link
             style={{ textDecoration: "none" }}

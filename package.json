@@ -50,6 +50,7 @@
     "react": "^16.4.2",
     "react-ace": "^6.2.0",
     "react-ace-editor": "0.0.3",
+    "react-circular-progressbar": "^1.0.0",
     "react-dev-utils": "^5.0.1",
     "react-dom": "^16.4.2",
     "react-lottie": "^1.2.3",

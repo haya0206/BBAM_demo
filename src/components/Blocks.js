@@ -45,7 +45,6 @@ class Blocks extends Component {
     });
     this.workspace.getFlyout().setRecyclingEnabled(false);
     var xml = BBAMblocks.Xml.workspaceToDom(this.workspace);
-    BBAMblocks.ScratchMsgs.setLocale("ko");
     BBAMblocks.Xml.clearWorkspaceAndLoadFromXml(xml, this.workspace);
     this.workspace.getFlyout().setRecyclingEnabled(true);
     this.setToolboxRefreshEnabled = this.workspace.setToolboxRefreshEnabled.bind(
@@ -73,9 +72,9 @@ class Blocks extends Component {
         }
         this.setState(state => ({ preSeq: state.logSeq }));
       }, 5000);
-      if (this.props.problemPreXml !== null) {
+      if (this.props.preXml !== null) {
         BBAMblocks.Xml.domToWorkspace(
-          BBAMblocks.Xml.textToDom(this.props.problemPreXml),
+          BBAMblocks.Xml.textToDom(this.props.preXml),
           this.workspace
         );
       }
