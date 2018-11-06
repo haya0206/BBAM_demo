@@ -56,7 +56,7 @@ class Blocks extends Component {
     this.props.store.workspace = this.workspace;
     this.props.store.stop = 0;
     this.props.store.much = 0;
-    if (this.props.type !== "battle") {
+    if (this.props.type !== "battle" && this.props.type !== "sandbox") {
       this.workspace.addChangeListener(this.eventListener);
       this.interval = setInterval(() => {
         console.log(this.state.preSeq, this.state.logSeq);
@@ -105,7 +105,7 @@ class Blocks extends Component {
     //console.log(this.workspace.getBlockById(event.blockId)) ;
   };
   post = type => {
-    const url = "https://bbam.tk/log";
+    const url = "https://bbam.study/log";
     const code = BBAMblocks.Python.workspaceToCode(this.props.store.workspace);
     axios
       .post(url, {
@@ -149,6 +149,7 @@ class Blocks extends Component {
       nowChange,
       value,
       setValue,
+      height,
       ...props
     } = this.props;
     return (
@@ -159,8 +160,8 @@ class Blocks extends Component {
             this.props.nowChange === true
               ? ""
               : this.props.width === "xs"
-                ? "calc(85vh - 56px)"
-                : "calc(85vh - 64px)"
+                ? `calc(${height} - 56px)`
+                : `calc(${height} - 64px)`
           }
           {...props}
         />

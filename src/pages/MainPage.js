@@ -188,7 +188,7 @@ class MainPage extends Component {
   }
   componentWillMount() {
     const userInfo = JSON.parse(localStorage.getItem("userInfo"));
-    const url = "https://bbam.tk/mainPage";
+    const url = "https://bbam.study/mainPage";
     axios
       .post(url, {
         ID: userInfo.id
@@ -225,7 +225,7 @@ class MainPage extends Component {
     // then redirect
     this.goTo(url);
   };
-  goTo = (url) => {
+  goTo = url => {
     this.props.history.push(`${url}`);
   };
   handleClose = () => {
@@ -246,7 +246,7 @@ class MainPage extends Component {
             height: "40vh"
           }}
         >
-          <MainAppBar />
+          <MainAppBar goTo={this.goTo} />
           <MainAvatar alt="Remy Sharp" src={EmptyAvatar} />
           <TextFiled>
             <Name>{user === null ? "Loading" : user.name}</Name>
@@ -274,7 +274,12 @@ class MainPage extends Component {
           >
             <MainItemText>문제풀이</MainItemText>
           </MainItemSquere>
-          <MainItemSquere TopRight>
+          <MainItemSquere
+            TopRight
+            onClick={() => {
+              this.handleOnClick("/sandbox");
+            }}
+          >
             <MainItemText>샌드박스</MainItemText>
           </MainItemSquere>
           <MainItemSquere BottomLeft style={{ clear: "left" }}>

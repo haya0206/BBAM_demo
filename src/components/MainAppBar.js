@@ -46,7 +46,6 @@ const MenuIconDiv = styled.div`
   }};
 `;
 const InfoIconDiv = styled.div`
-  background-image: url(${InfoIcon});
   height: 23px;
   width: 22.5px;
 `;

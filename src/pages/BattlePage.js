@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import AppBar from "../components/MainAppBar";
 import styled from "styled-components";
-import SelectDiv from "../components/SelectDivComponent";
+import SelectDiv from "../components/GameSelectDivComponent";
 import Modal from "@material-ui/core/Modal";
 import Avatar from "@material-ui/core/Avatar";
 import EmptyAvatar from "../media/emptyAvatar.png";
@@ -160,7 +160,7 @@ class BattlePage extends Component {
             <Title>{userInfo === null ? "Loading" : userInfo.name}</Title>
             <Level>
               LV.
-              {userInfo === null ? "Loading" : userInfo.Level}
+              {userInfo === null ? "Loading" : userInfo.level}
             </Level>
             <Ranking>
               랭킹 {userInfo === null ? "Loading" : userInfo.rank}위

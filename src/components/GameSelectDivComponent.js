@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import styled from "styled-components";
 import friendsIcon from "../media/friends.svg";
-import UserList from "../components/UserList";
-import RankingList from "../components/RankingList";
+import UserList from "./UserList";
+import RankingList from "./RankingList";
 const SelectDiv = styled.div`
   height: 70%;
 `;
@@ -52,13 +52,14 @@ const Button = styled.div`
   ${props => {
     if (props.selected) {
       return `background-color: white;
-  color: #3194ff;`;
+  color: #3194ff;
+  border: 1.5px solid #ffffff;`;
     } else {
       return `border: 1.5px solid #E5E5E5;color: #ffffff; `;
     }
   }};
 `;
-class SelectDivComponent extends Component {
+class GameSelectDivComponent extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -128,4 +129,4 @@ class SelectDivComponent extends Component {
     );
   }
 }
-export default SelectDivComponent;
+export default GameSelectDivComponent;

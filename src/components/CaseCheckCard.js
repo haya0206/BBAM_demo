@@ -131,6 +131,7 @@ const BackButton = styled.div`
   position: absolute;
   font-size: 20px;
   color: #e2e2e2;
+  margin-left: 20px;
 `;
 const List = styled.div`
   height: 100%;

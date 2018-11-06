@@ -122,7 +122,7 @@ class ProblemListPage extends Component {
     this.props.history.push("/mainpage");
   };
   getProblemList = num => {
-    const url = "https://bbam.tk/getProblemList";
+    const url = "https://bbam.study/getProblemList";
     axios
       .post(url, {
         diff: num
@@ -141,7 +141,7 @@ class ProblemListPage extends Component {
     this.setState({ difficultyNum: num });
   };
   getProblem = (num, name) => {
-    const url = "https://bbam.tk/getProblem";
+    const url = "https://bbam.study/getProblem";
     const userInfo = JSON.parse(localStorage.getItem("userInfo"));
     axios
       .post(url, {

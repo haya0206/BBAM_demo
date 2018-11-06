@@ -5,7 +5,7 @@ import styled from "styled-components";
 import logo from "../media/logo.svg";
 import axios from "axios";
 import { CSSTransition } from "react-transition-group";
-import "./LoginPage.css"
+import "./LoginPage.css";
 const Div = styled.div`
   height: 100vh;
   display: flex;
@@ -33,10 +33,11 @@ const LoginCard = styled.div`
   align-items: center;
   flex-direction: column;
   position: absolute;
-  top: 70%;
+  top: 50%;
   left: 50%;
-  transform: translate(-50%, -70%);
+  transform: translate(-50%, -50%);
   box-shadow: 5px 5px 20px #aaaaaa;
+  margin-top: 85px;
 `;
 const BottomCard = styled.div`
   background: #ffffff;
@@ -49,7 +50,6 @@ const BottomCard = styled.div`
   position: relative;
 `;
 const LoginButton = styled.a`
-  margin: 10px;
   font-size: 20px;
   padding: 15px;
   text-align: center;
@@ -75,9 +75,10 @@ const LoginButton = styled.a`
     background-position: right center;
   }
   position: absolute;
-  top: 83%;
-  left: 48%;
-  transform: translate(-48%, -83%);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  margin-top: 207px;
 `;
 const Text = styled.div`
   display: flex;
@@ -105,7 +106,7 @@ class LoginPage extends Component {
     }*/
   }
   handleOnClick = () => {
-    const url = "https://bbam.tk/login";
+    const url = "https://bbam.study/login";
     axios
       .post(url, {
         ID: this.state.id,
@@ -138,38 +139,38 @@ class LoginPage extends Component {
       <Div>
         <LogoSvg />
         <BottomCard />
-          <LoginCard>
-            <Text>
-              <TextField
-                value={this.state.id}
-                onChange={this.handleChange("id")}
-                placeholder="Enter your Username"
-                label="Username"
-                style={{ width: 200 }}
-                margin="normal"
-                fullWidth
-              />
-              <TextField
-                fullWidth
-                value={this.state.password}
-                onChange={this.handleChange("password")}
-                placeholder="Enter your Password"
-                id="password-input"
-                label="Password"
-                style={{ width: 200 }}
-                type="password"
-                autoComplete="current-password"
-                margin="normal"
-              />
-            </Text>
-            {this.state.re === false ? (
-              <div />
-            ) : (
-              <div style={{ color: "#ff1616" }}>
-                아이디 또는 비밀번호를 다시 확인하세요.
-              </div>
-            )}
-          </LoginCard>
+        <LoginCard>
+          <Text>
+            <TextField
+              value={this.state.id}
+              onChange={this.handleChange("id")}
+              placeholder="Enter your Username"
+              label="Username"
+              style={{ width: 200 }}
+              margin="normal"
+              fullWidth
+            />
+            <TextField
+              fullWidth
+              value={this.state.password}
+              onChange={this.handleChange("password")}
+              placeholder="Enter your Password"
+              id="password-input"
+              label="Password"
+              style={{ width: 200 }}
+              type="password"
+              autoComplete="current-password"
+              margin="normal"
+            />
+          </Text>
+          {this.state.re === false ? (
+            <div />
+          ) : (
+            <div style={{ color: "#ff1616" }}>
+              아이디 또는 비밀번호를 다시 확인하세요.
+            </div>
+          )}
+        </LoginCard>
         <LoginButton onClick={this.handleOnClick}>로그인</LoginButton>
       </Div>
     );

@@ -8,7 +8,7 @@ import IconButton from "@material-ui/core/IconButton";
 import MenuIcon from "../media/Menu.svg";
 import InfoIcon from "../media/info.svg";
 import styled from "styled-components";
-
+import { Link } from "react-router-dom";
 const styles = {
   grow: {
     flexGrow: 1,
@@ -28,7 +28,7 @@ const styles = {
   }
 };
 const Root = styled.div`
-  flexgrow: 1;
+  flex-grow: 1;
 `;
 const MenuIconDiv = styled.div`
   background-image: url(${MenuIcon});
@@ -42,7 +42,7 @@ const InfoIconDiv = styled.div`
 `;
 class MenuAppBar extends React.Component {
   render() {
-    const { classes } = this.props;
+    const { classes, goTo } = this.props;
 
     return (
       <Root>
@@ -69,6 +69,9 @@ class MenuAppBar extends React.Component {
               className={classes.accountButton}
               color="inherit"
               aria-label="Menu"
+              onClick={() => {
+                goTo("mypage");
+              }}
             >
               <InfoIconDiv />
             </IconButton>

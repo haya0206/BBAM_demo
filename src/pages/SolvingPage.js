@@ -43,7 +43,13 @@ const HintButton = styled.div`
   height: 3vh;
   width: 7vh;
   color: #fff;
-  background-color: #519cfe;
+  background-color: ${props => {
+    if (props.stop) {
+      return "#808080";
+    } else {
+      return "#519cfe";
+    }
+  }};
   transform: translate(-85%, -90%);
 `;
 const HintModal = styled.div`
@@ -155,8 +161,9 @@ class SolvingPage extends Component {
       });
     }
   }
+
   postSubmit = submitInfo => {
-    const url = "https://bbam.tk/submit";
+    const url = "https://bbam.study/submit";
     console.log(submitInfo);
     axios
       .post(url, {
@@ -176,8 +183,9 @@ class SolvingPage extends Component {
         console.log(error);
       });
   };
+
   getProblem = () => {
-    const url = "https://bbam.tk/getProblem";
+    const url = "https://bbam.study/getProblem";
     axios
       .post(url, {
         PID: this.props.match.params.id,
@@ -199,6 +207,7 @@ class SolvingPage extends Component {
         console.log(error);
       });
   };
+
   handleOpen = () => {
     this.setState({ open: true });
   };
@@ -206,9 +215,11 @@ class SolvingPage extends Component {
   handleClose = () => {
     this.setState({ open: false });
   };
+
   onChange = newValue => {
     this.setState({ value: newValue });
   };
+
   inputPapa = (paCode, paInput) => {
     if (paInput === null) return paCode;
     let ret = paCode;
@@ -217,11 +228,13 @@ class SolvingPage extends Component {
       ret = ret.replace(/input\(\)/, paInputArr[i]);
     return ret;
   };
+
   onBackButton = () => {
     this.setState(prevState => ({
       caseCardvisible: !prevState.caseCardvisible
     }));
   };
+
   callBrython = (cbCode, cbTimeout) => {
     window.isDone = false;
 
@@ -257,6 +270,7 @@ class SolvingPage extends Component {
 
     return true;
   };
+
   handleSubmit = () => {
     const { store } = this.props;
     BBAMblocks.WidgetDiv.hide(true);
@@ -332,6 +346,7 @@ class SolvingPage extends Component {
       });
     }
   };
+
   fromCode = () => {
     const { store } = this.props;
     store.workspace.clear();
@@ -340,6 +355,7 @@ class SolvingPage extends Component {
     const xml = BBAMblocks.Python.rebert(this.state.value);
     this.xmlToWorkspace(xml);
   };
+
   xmlToWorkspace = xml => {
     const { store } = this.props;
     BBAMblocks.Xml.domToWorkspace(
@@ -347,9 +363,11 @@ class SolvingPage extends Component {
       store.workspace
     );
   };
+
   setValue = text => {
     this.setState({ value: text });
   };
+
   getCode = () => {
     const { store } = this.props;
     if (this.state.isChange === true) {
@@ -357,6 +375,7 @@ class SolvingPage extends Component {
     }
     return BBAMblocks.Python.workspaceToCode(store.workspace);
   };
+
   isChangeAction = () => {
     const { store } = this.props;
     this.setState({ isChange: !this.state.isChange });
@@ -365,9 +384,11 @@ class SolvingPage extends Component {
       ? this.setValue(this.getCode())
       : this.fromCode();
   };
+
   handleMuchModalClose = () => {
     this.props.store.muchModalOpen = false;
   };
+
   render() {
     const {
       problemHint,
@@ -412,7 +433,7 @@ class SolvingPage extends Component {
             {store.stop === 1 ? (
               <HintButton onClick={this.handleOpen}>힌트</HintButton>
             ) : (
-              <div />
+              <HintButton stop>힌트</HintButton>
             )}
           </ProblemDiv>
           {problemXml === "" ? (
@@ -429,6 +450,7 @@ class SolvingPage extends Component {
                 xml={problemXml}
                 preXml={problemPreXml}
                 type={type}
+                height="85vh"
               />
             </Provider>
           )}

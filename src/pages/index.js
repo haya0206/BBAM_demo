@@ -4,3 +4,5 @@ export { default as MainPage } from "./MainPage";
 export { default as AppFirstPage } from "./AppFirstPage";
 export { default as LoginPage } from "./LoginPage";
 export { default as BattlePage } from "./BattlePage";
+export { default as SandBoxPage } from "./SandBoxPage";
+export { default as MyPage } from "./MyPage";

@@ -8,7 +8,7 @@ class Socket {
   login = ({ id, name, rating, rank }) => {
     return new Promise((resolve, reject) => {
       if (this.io === null) {
-        this.io = io("https://bbam.tk", {
+        this.io = io("https://bbam.study", {
           query: { id, name, rating, rank }
         });
         this.io.once("logined", userData => {

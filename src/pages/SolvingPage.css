@@ -5,3 +5,6 @@
 :local(.Block) {
   display: none;
 }
+.ace_editor.ace_autocomplete {
+  height: 1px;
+}

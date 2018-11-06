@@ -22,13 +22,13 @@ const Card = styled.div`
 `;
 const CardTitle = styled.div`
   position: absolute;
-  top: 78%;
+  top: 112%;
   left: 50%;
   background-color: #519cfe;
   border-radius: 10px;
-  width: 50%;
-  height: 9%;
-  transform: translate(-50%, -78%);
+  width: 58%;
+  height: 45px;
+  transform: translate(-50%, -112%);
   font-weight: 700;
   font-size: 25px;
   color: #ffffff;
@@ -75,11 +75,11 @@ const ProblemSwipe = props => {
         <DiffText>{difficulty[difficultyNum]}</DiffText>
         <ChepterText>{problemName}</ChepterText>
       </TextBox>
-      <Link to={{ pathname: `/problem/${problemNum}` }}>
-        <CardTitle>풀러가기</CardTitle>
-      </Link>
       <Card>
         <ProblemText>{problemValue}</ProblemText>
+        <Link to={{ pathname: `/problem/${problemNum}` }}>
+          <CardTitle>풀러가기</CardTitle>
+        </Link>
       </Card>
     </Div>
   );

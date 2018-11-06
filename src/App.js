@@ -6,7 +6,9 @@ import {
   MainPage,
   AppFirstPage,
   LoginPage,
-  BattlePage
+  BattlePage,
+  SandBoxPage,
+  MyPage
 } from "pages";
 import { injectGlobal } from "styled-components";
 import Socket from "./core/Socket";
@@ -93,6 +95,11 @@ class App extends Component {
                   />
                 )}
               />
+              <Route
+                path="/sandbox"
+                render={props => <SandBoxPage {...props} store={store} />}
+              />
+              <Route exact path="/mypage" component={MyPage} />
             </Switch>
           </section>
         </CSSTransition>
