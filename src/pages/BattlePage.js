@@ -7,6 +7,7 @@ import Avatar from "@material-ui/core/Avatar";
 import EmptyAvatar from "../media/emptyAvatar.png";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { withRouter } from "react-router-dom";
+import axios from "axios";
 const UserStatus = styled.div`
   height: 30%;
   border-bottom: 1.5px solid #e2e2e2;
@@ -99,7 +100,14 @@ const CenterAlignDiv = styled.div`
   flex-direction: column;
   width: 100%;
 `;
-
+const MainAvatar = styled(Avatar)`
+  position: absolute !important;
+  top: 15%;
+  left: 10%;
+  transform: translate(-10%, -15%);
+  width: 130px !important;
+  height: 130px !important;
+`;
 class BattlePage extends Component {
   constructor(props) {
     super(props);
@@ -108,34 +116,55 @@ class BattlePage extends Component {
       user: null,
       isBattle: false,
       isAllowed: true,
-      userInfo: null
+      userInfo: null,
+      list: [{ GM_ID: "", GM_EXP: "" }]
     };
     this.goBack = this.goBack.bind(this);
     this.goTo = this.goTo.bind(this);
   }
+
   componentDidMount() {
     const userInfo = JSON.parse(localStorage.getItem("userInfo"));
     this.setState({ userInfo });
-    this.props.list();
+    const url = "https://bbam.study/rank";
+    axios
+      .post(url, {})
+      .then(response => {
+        const list = response.data.sort(function(a, b) {
+          return b.GM_RTN - a.GM_RTN;
+        });
+        console.log(list);
+        this.setState({ list });
+      })
+      .catch(error => {
+        console.log(error);
+      });
   }
+
   handleBack = () => {
     this.goBack();
   };
+
   handleTo = () => {
     this.goTo();
   };
+
   goBack = () => {
     this.props.history.push("/mainpage");
   };
+
   goTo = () => {
     this.props.history.push("/battleBlock");
   };
+
   handleOpen = (user, socketId) => {
     this.setState({ open: true, user: { ...user, socketId } });
   };
+
   handleClose = () => {
     this.setState({ open: false, isAllowed: true, isBattle: false });
   };
+
   handleBattle = () => {
     this.setState(state => ({ isBattle: !state.isBattle, isAllowed: true }));
     this.props.toBattle(this.state.user).then(({ bool, problemNum }) => {
@@ -150,12 +179,13 @@ class BattlePage extends Component {
     });
   };
   render() {
-    const { user, isBattle, isAllowed, userInfo } = this.state;
+    const { user, isBattle, isAllowed, userInfo, list } = this.state;
     const { store } = this.props;
     return (
       <Div>
         <AppBar backArrow={true} handleBack={this.handleBack} />
         <UserStatus>
+          <MainAvatar alt="Remy Sharp" src={EmptyAvatar} />
           <TextBox>
             <Title>{userInfo === null ? "Loading" : userInfo.name}</Title>
             <Level>
@@ -170,7 +200,7 @@ class BattlePage extends Component {
             </Rating>
           </TextBox>
         </UserStatus>
-        <SelectDiv handleOpen={this.handleOpen} store={store} />>
+        <SelectDiv handleOpen={this.handleOpen} store={store} list={list} />
         <Modal
           aria-labelledby="simple-modal-title"
           aria-describedby="simple-modal-description"

@@ -10,7 +10,7 @@ const SelectMenu = styled.div`
   height: 100%;
   width: 40%;
   float: left;
-  background-color: rgb(81, 156, 254, 0.76);
+  background-color: rgb(123, 180, 254);
   display: flex;
   align-items: center;
   flex-direction: column;
@@ -72,7 +72,7 @@ class GameSelectDivComponent extends Component {
   };
   render() {
     const { selected } = this.state;
-    const { handleOpen, store } = this.props;
+    const { handleOpen, store, list } = this.props;
     return (
       <SelectDiv>
         <SelectMenu>
@@ -83,16 +83,16 @@ class GameSelectDivComponent extends Component {
               this.onButton(1);
             }}
           >
-            대전상대
+            실시간대전
           </Button>
-          <Button
+          {/* <Button
             selected={selected === 2}
             onClick={() => {
               this.onButton(2);
             }}
           >
-            랜덤대전
-          </Button>
+            기록대전
+          </Button> */}
           <Button
             selected={selected === 3}
             onClick={() => {
@@ -101,30 +101,37 @@ class GameSelectDivComponent extends Component {
           >
             나의랭킹
           </Button>
-          <Button
+          {/* <Button
             selected={selected === 4}
             onClick={() => {
               this.onButton(4);
             }}
           >
             대전기록
-          </Button>
+          </Button> */}
         </SelectMenu>
-        <ShowMenu>
-          <TopBar>
-            <TopIcon />
-          </TopBar>
-          {(() => {
-            switch (this.state.selected) {
-              case 1:
-                return <UserList store={store} handleOpen={handleOpen} />;
-              case 3:
-                return <RankingList />;
-              default:
-                null;
-            }
-          })()}
-        </ShowMenu>
+
+        {(() => {
+          switch (this.state.selected) {
+            case 1:
+              return (
+                <ShowMenu>
+                  <TopBar>
+                    <TopIcon />
+                  </TopBar>
+                  <UserList store={store} handleOpen={handleOpen} />
+                </ShowMenu>
+              );
+            case 3:
+              return (
+                <ShowMenu>
+                  <RankingList list={list} />
+                </ShowMenu>
+              );
+            default:
+              null;
+          }
+        })()}
       </SelectDiv>
     );
   }

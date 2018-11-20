@@ -9,6 +9,8 @@ const Card = styled.div`
   position: absolute;
   border-radius: 25px;
   border: 1.5px solid #e2e2e2;
+  padding-top: 20px;
+  padding-bottom: 20px;
   width: 85%;
   height: 50%;
   top: 50%;
@@ -55,9 +57,8 @@ const ChepterText = styled.div`
   font-size: 15px;
   color: #595959;
 `;
-const ProblemText = styled.div`
+const ProblemText = styled.span`
   width: 90%;
-  font-size: 15px;
   word-wrap: break-word;
   word-break: keep-all;
   color: #595959;
@@ -65,6 +66,7 @@ const ProblemText = styled.div`
   line-height: 30px;
   white-space: pre-wrap;
   text-align: center;
+  overflow: scroll;
 `;
 const ProblemSwipe = props => {
   const { problemNum, problemValue, problemName, difficultyNum } = props;

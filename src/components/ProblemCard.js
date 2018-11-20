@@ -1,13 +1,15 @@
 import React from "react";
 import styled from "styled-components";
-const ProblemTextBox = styled.div`
-  height: 80%;
+const ProblemTextBox = styled.span`
   width: 90%;
+  padding-top: 10px;
+  padding-bottom: 15px;
   font-size: 15px;
   text-align: center;
   word-wrap: break-word;
   word-break: keep-all;
   color: #595959;
+  overflow: scroll;
 `;
 const ProblemCardBox = styled.div`
   border-radius: 10px;

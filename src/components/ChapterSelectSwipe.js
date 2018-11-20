@@ -93,22 +93,26 @@ const ChapterSelectSwipe = props => {
       <ProblemList>
         {problemList === null
           ? ""
-          : problemList.map((id, index, list) => (
-              <Problem
-                onClick={() => {
-                  handleNext(id.PRB_ID, id.PRB_NM);
-                }}
-                key={index}
-                last={index + 1 === list.length ? true : false}
-              >
-                <ProblemTitle>{`${id.PRB_NM}`}</ProblemTitle>
-                <ProblemCheck>
-                  <CheckIconDiv />
-                  문제풀이 가능
-                </ProblemCheck>
-                <Hr />
-              </Problem>
-            ))}
+          : problemList.map((id, index, list) =>
+              id === null ? (
+                ""
+              ) : (
+                <Problem
+                  onClick={() => {
+                    handleNext(id.PRB_ID, id.PRB_NM);
+                  }}
+                  key={index}
+                  last={index + 1 === list.length ? true : false}
+                >
+                  <ProblemTitle>{`${id.PRB_NM}`}</ProblemTitle>
+                  <ProblemCheck>
+                    <CheckIconDiv />
+                    문제풀이 가능
+                  </ProblemCheck>
+                  <Hr />
+                </Problem>
+              )
+            )}
         {/*<Link style={{ textDecoration: "none" }} to="/textTest">
           <Problem>
             <ProblemTitle>챕터 1</ProblemTitle>

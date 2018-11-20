@@ -8,6 +8,7 @@ import solveIcon from "../media/solveIcon.svg";
 import sandboxIcon from "../media/sandboxIcon.svg";
 import peopleIcon from "../media/peopleIcon.svg";
 import fightIcon from "../media/fightIcon.svg";
+import Snackbar from "@material-ui/core/Snackbar";
 import Modal from "@material-ui/core/Modal";
 import axios from "axios";
 import { observer } from "mobx-react";
@@ -182,7 +183,8 @@ class MainPage extends Component {
     this.state = {
       redirect: false,
       url: "",
-      user: null
+      user: null,
+      open: false
     };
     this.goTo = this.goTo.bind(this);
   }
@@ -199,12 +201,18 @@ class MainPage extends Component {
           level: response.data[0].GM_LV,
           exp: response.data[0].GM_EXP,
           rating: response.data[0].GM_RTN,
-          rank: 1
+          name: response.data[0].USR_NCK,
+          rank: response.data[0].ranking.split("/")[0]
         };
         console.log(user);
         localStorage.setItem(`userInfo`, JSON.stringify(user));
         this.props
-          .login({ id: user.id, name: user.name, rating: user.rating, rank: 1 })
+          .login({
+            id: user.id,
+            name: user.name,
+            rating: user.rating,
+            rank: user.rank
+          })
           .then(problemNum => {
             this.props.history.push(
               `/battlepage/${this.props.store.roomId}/${problemNum}`
@@ -233,6 +241,13 @@ class MainPage extends Component {
   };
   handleBattle = () => {
     this.props.toInvite(this.props.store.inviteUser, true);
+  };
+  handleSnackbarClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    this.setState({ open: false });
   };
   render() {
     const { store } = this.props;
@@ -282,7 +297,13 @@ class MainPage extends Component {
           >
             <MainItemText>샌드박스</MainItemText>
           </MainItemSquere>
-          <MainItemSquere BottomLeft style={{ clear: "left" }}>
+          <MainItemSquere
+            BottomLeft
+            style={{ clear: "left" }}
+            onClick={() => {
+              this.setState({ open: true });
+            }}
+          >
             <MainItemText>커뮤니티</MainItemText>
           </MainItemSquere>
           <MainItemSquere
@@ -327,6 +348,19 @@ class MainPage extends Component {
             </CenterAlignDiv>
           </ModalDiv>
         </Modal>
+        <Snackbar
+          anchorOrigin={{
+            vertical: "bottom",
+            horizontal: "left"
+          }}
+          onClose={this.handleSnackbarClose}
+          open={this.state.open}
+          autoHideDuration={1000}
+          ContentProps={{
+            "aria-describedby": "message-id"
+          }}
+          message={<span id="message-id">준비 중입니다!</span>}
+        />
       </Div>
     );
   }

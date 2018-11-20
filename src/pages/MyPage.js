@@ -82,7 +82,7 @@ const CenterAlignDiv = styled.div`
   flex-direction: column;
   width: 100%;
 `;
-const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+
 const myDate = new Date();
 const day = [
   "Sunday",
@@ -126,12 +126,20 @@ class MyPage extends Component {
         Much: 0,
         fill: "rgba(194,145,254,0.5)",
         stroke: "rgba(194,145,254,0.2)"
+      },
+      ranking: "",
+      submit: "",
+      yes: "",
+      no: "",
+      userInfo: {
+        name: ""
       }
     };
     this.goBack = this.goBack.bind(this);
   }
   componentDidMount() {
     const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+    this.setState({ userInfo });
     const url = "https://bbam.study/feedback";
     axios
       .post(url, {
@@ -139,6 +147,15 @@ class MyPage extends Component {
       })
       .then(response => {
         console.log(response);
+        let yes = 0,
+          no = 0;
+        for (var i = 0; i < response.data.submitList.length; i++) {
+          if (response.data.submitList[i].UP_CRCT === 1) {
+            yes++;
+          } else {
+            no++;
+          }
+        }
         this.setState({
           data: {
             name: "Mercedes",
@@ -149,7 +166,11 @@ class MyPage extends Component {
             Much: ((response.data.MUCH / response.data._MUCH) * 100) / 20,
             fill: "rgba(194,145,254,0.5)",
             stroke: "rgba(194,145,254,0.2)"
-          }
+          },
+          ranking: response.data.ranking.split("/")[0],
+          submit: response.data.submitList.length,
+          yes: yes,
+          no: no
         });
       })
       .catch(error => {
@@ -163,7 +184,7 @@ class MyPage extends Component {
     this.goBack();
   };
   render() {
-    const { data } = this.state;
+    const { data, ranking, submit, yes, no, userInfo } = this.state;
     return (
       <div>
         <AppBar backArrow={true} handleBack={this.handleBack} />
@@ -225,7 +246,7 @@ class MyPage extends Component {
             hideInnerMostValues={false}
             renderAxesOverPolygons={true}
           />
-          <UserInfoList list={list} />
+          <UserInfoList list={[ranking, submit, yes, no]} />
         </CenterAlignDiv>
       </div>
     );

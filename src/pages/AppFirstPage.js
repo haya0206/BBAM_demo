@@ -58,7 +58,6 @@ const Value = styled.a`
   font-size: 13px;
 `;
 const StartButton = styled.a`
-  margin: 10px;
   font-size: 20px;
   padding: 15px;
   text-align: center;
@@ -84,9 +83,9 @@ const StartButton = styled.a`
     background-position: right center;
   }
   position: absolute;
-  top: 105%;
-  left: 48%;
-  transform: translate(-50%, -50%);
+  margin-top: 30px;
+  left: 50%;
+  transform: translate(-50%, 0%);
 `;
 class AppFirstPage extends Component {
   constructor(props) {

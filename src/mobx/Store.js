@@ -1,4 +1,4 @@
-import { observable, action, computed } from "mobx";
+import { observable, action } from "mobx";
 class ObservableStore {
   @observable
   workspace = null;
@@ -18,13 +18,24 @@ class ObservableStore {
   much = 0;
   @observable
   muchModalOpen = false;
+  @observable
+  anotherUser = null;
+  @action
+  addAnotherUser = id =>{
+    this.anotherUser = id;
+  }
   @action
   deleteUser = id => {
     delete this.userList[id];
   };
   @action
   addUser = info => {
-    this.userList[info.socketId] = { name: info.name, id: info.id };
+    this.userList[info.socketId] = {
+      name: info.name,
+      id: info.id,
+      rank: info.rank,
+      rating: info.rating
+    };
   };
   @action
   setUsers = users => {

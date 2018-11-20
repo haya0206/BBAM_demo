@@ -76,11 +76,7 @@ class App extends Component {
               <Route
                 path="/battle"
                 render={() => (
-                  <BattlePage
-                    list={socket.getUserList}
-                    toBattle={socket.toBattle}
-                    store={store}
-                  />
+                  <BattlePage toBattle={socket.toBattle} store={store} />
                 )}
               />
               <Route

@@ -129,9 +129,9 @@ const ButtonDiv = styled.div`
 `;
 const BackButton = styled.div`
   position: absolute;
-  font-size: 20px;
-  color: #e2e2e2;
-  margin-left: 20px;
+  font-size: 25px;
+  color: #000000;
+  margin-left: 10px;
 `;
 const List = styled.div`
   height: 100%;
@@ -323,9 +323,9 @@ class CaseCheckCard extends Component {
             {caseData !== null ? (
               <TextFild>
                 <div>{`IN : ${
-                  caseData.casein === null ? `없음` : `${caseData.casein}`
+                  caseData.casein[0] === "" ? `없음` : `${caseData.casein[0]}`
                 }`}</div>
-                <div>{`OUT: ${caseData.caseout}`}</div>
+                <div>{`OUT: ${caseData.caseout[0]}`}</div>
                 <div>{`Result: ${caseData.result}`}</div>
               </TextFild>
             ) : (

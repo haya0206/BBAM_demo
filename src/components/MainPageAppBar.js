@@ -7,6 +7,7 @@ import Typography from "@material-ui/core/Typography";
 import IconButton from "@material-ui/core/IconButton";
 import MenuIcon from "../media/Menu.svg";
 import InfoIcon from "../media/info.svg";
+import LogoutIcon from "../media/logout.png";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 const styles = {
@@ -31,7 +32,7 @@ const Root = styled.div`
   flex-grow: 1;
 `;
 const MenuIconDiv = styled.div`
-  background-image: url(${MenuIcon});
+  background-image: url(${LogoutIcon});
   height: 19.5px;
   width: 26px;
 `;

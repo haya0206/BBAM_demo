@@ -74,7 +74,6 @@ const Bar = styled.hr`
   border: 0;
   height: 2px;
 `;
-const userInfo = JSON.parse(localStorage.getItem("userInfo"));
 class ProblemListPage extends Component {
   constructor(props) {
     super(props);
@@ -111,7 +110,7 @@ class ProblemListPage extends Component {
           problemValue: problem.PRB_CNT
         });
       } else {
-        this.getProblem(problemNum, problem.PRB_NM);
+        this.getProblem(problemNum);
       }
     }
   }
@@ -140,7 +139,7 @@ class ProblemListPage extends Component {
       });
     this.setState({ difficultyNum: num });
   };
-  getProblem = (num, name) => {
+  getProblem = (num, name = "") => {
     const url = "https://bbam.study/getProblem";
     const userInfo = JSON.parse(localStorage.getItem("userInfo"));
     axios
@@ -151,7 +150,7 @@ class ProblemListPage extends Component {
       .then(response => {
         this.setState({
           problemValue: response.data[0].PRB_CNT,
-          problemName: name
+          problemName: response.data[0].PRB_NM
         });
         sessionStorage.setItem(`${num}`, JSON.stringify(response.data[0]));
         console.log(response);

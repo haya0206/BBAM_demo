@@ -116,7 +116,6 @@ const SolveDiv = styled.div`
   position: relative;
   height: calc(100vh - 56px);
 `;
-const userInfo = JSON.parse(localStorage.getItem("userInfo"));
 @observer
 class SolvingPage extends Component {
   constructor(props) {
@@ -185,6 +184,7 @@ class SolvingPage extends Component {
   };
 
   getProblem = () => {
+    const userInfo = JSON.parse(localStorage.getItem("userInfo"));
     const url = "https://bbam.study/getProblem";
     axios
       .post(url, {
@@ -221,6 +221,7 @@ class SolvingPage extends Component {
   };
 
   inputPapa = (paCode, paInput) => {
+    console.log(paInput);
     if (paInput === null) return paCode;
     let ret = paCode;
     let paInputArr = paInput.split(/\s/gm);
@@ -272,10 +273,11 @@ class SolvingPage extends Component {
   };
 
   handleSubmit = () => {
+    const userInfo = JSON.parse(localStorage.getItem("userInfo"));
     const { store } = this.props;
     BBAMblocks.WidgetDiv.hide(true);
     let code = this.getCode();
-    code = this.inputPapa(code, this.state.problemCaseIn);
+    code = this.inputPapa(code, this.state.problemCaseIn[0]);
     const getCode = window.__BRYTHON__
       .py2js(code, "__main__", "__main__")
       .to_js();
@@ -296,7 +298,7 @@ class SolvingPage extends Component {
       BBAMblocks.Xml.workspaceToDom(store.workspace)
     );
     let submitInfo = null;
-    if (result === this.state.problemCaseOut && time < 2000) {
+    if (result === this.state.problemCaseOut[0] && time < 2000) {
       submitInfo = [
         {
           UID: userInfo.id,
@@ -328,7 +330,21 @@ class SolvingPage extends Component {
       ];
     }
     if (this.props.type === "battle" && submitInfo[0].crct === 1) {
+      const { store } = this.props;
+      const userInfo = JSON.parse(localStorage.getItem("userInfo"));
       this.props.success(store.roomId).then(() => {
+        const url = "https://bbam.study/endGame";
+        axios
+          .post(url, {
+            winner: userInfo.id,
+            loser: store.anotherUser.id
+          })
+          .then(response => {
+            console.log(response);
+          })
+          .catch(error => {
+            console.log(error);
+          });
         this.setState({ winModalOpen: true, win: true });
       });
     } else if (this.props.type === "battle" && submitInfo[0].crct === 0) {
@@ -401,8 +417,8 @@ class SolvingPage extends Component {
       win,
       submitData
     } = this.state;
-    const { store } = this.props;
-    const { type } = this.props;
+    const { store, type } = this.props;
+    const userInfo = JSON.parse(localStorage.getItem("userInfo"));
     return (
       <Div>
         {/*
@@ -417,7 +433,11 @@ class SolvingPage extends Component {
       </Provider>*/}
         <AppBar
           backArrow={true}
-          link={`/problemList/2/${problemDiff}/${this.props.match.params.id}`}
+          link={
+            type === "battle"
+              ? `/mainpage`
+              : `/problemList/2/${problemDiff}/${this.props.match.params.id}`
+          }
         />
         <SolveDiv>
           <CaseCheckCard
@@ -446,7 +466,7 @@ class SolvingPage extends Component {
                 value={this.state.value}
                 setValue={this.setValue}
                 id={this.props.match.params.id}
-                name={userInfo.name}
+                name={userInfo.id}
                 xml={problemXml}
                 preXml={problemPreXml}
                 type={type}

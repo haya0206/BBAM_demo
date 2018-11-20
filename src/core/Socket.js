@@ -11,32 +11,30 @@ class Socket {
         this.io = io("https://bbam.study", {
           query: { id, name, rating, rank }
         });
-        this.io.once("logined", userData => {
+        this.io.once("logined", (userData, users) => {
           this.userData = userData;
+          delete users[this.userData.socketId];
+          console.log(users);
+          this.state.setUsers(users);
         });
+      }
+      else{
+        this.io.emit("infoChange",this.userData.socketId, { id, name, rating, rank });
       }
       this.io.on("invite", user => {
         this.state.handleInvite(user);
         this.io.on("roomId", (id, problemNum) => {
+          this.state.addAnotherUser(user);
           this.state.roomIdSet(id);
           resolve(problemNum);
         });
       });
-    });
-  };
-  getUserList = () => {
-    return new Promise((resolve, reject) => {
-      this.io.emit("reqList");
-      this.io.on("list", users => {
-        delete users[this.userData.socketId];
-        console.log(users);
-        this.state.setUsers(users);
-        this.io.on("addList", info => {
-          this.state.addUser(info);
-        });
-        this.io.on("delList", socketId => {
-          this.state.deleteUser(socketId);
-        });
+      this.io.on("addList", info => {
+        console.log(info);
+        this.state.addUser(info);
+      });
+      this.io.on("delList", socketId => {
+        this.state.deleteUser(socketId);
       });
     });
   };
@@ -46,6 +44,7 @@ class Socket {
       this.io.on("inviteAllow", (bool, id, problemNum) => {
         this.io.emit("join");
         this.state.roomIdSet(id);
+        this.state.addAnotherUser(AnotherUser);
         console.log(id);
         resolve({ bool, problemNum });
       });

@@ -59,19 +59,19 @@ class Blocks extends Component {
     if (this.props.type !== "battle" && this.props.type !== "sandbox") {
       this.workspace.addChangeListener(this.eventListener);
       this.interval = setInterval(() => {
-        console.log(this.state.preSeq, this.state.logSeq);
+        //console.log(this.state.preSeq, this.state.logSeq);
         if (this.state.preSeq === this.state.logSeq) {
-          if (this.state.stopTime === 2) {
+          if (this.state.stopTime === 10) {
             this.props.store.stop = 1;
           }
           this.setState(state => ({ stopTime: state.stopTime + 1 }));
         }
-        if (this.state.logSeq - this.state.preSeq > 15) {
+        if (this.state.logSeq - this.state.preSeq > 3) {
           this.props.store.much = 1;
           this.props.store.muchModalOpen = true;
         }
         this.setState(state => ({ preSeq: state.logSeq }));
-      }, 5000);
+      }, 1000);
       if (this.props.preXml !== null) {
         BBAMblocks.Xml.domToWorkspace(
           BBAMblocks.Xml.textToDom(this.props.preXml),
@@ -160,8 +160,8 @@ class Blocks extends Component {
             this.props.nowChange === true
               ? ""
               : this.props.width === "xs"
-                ? `calc(${height} - 56px)`
-                : `calc(${height} - 64px)`
+              ? `calc(${height} - 56px)`
+              : `calc(${height} - 64px)`
           }
           {...props}
         />

@@ -113,10 +113,7 @@ class LoginPage extends Component {
         PW: this.state.password
       })
       .then(response => {
-        localStorage.setItem(
-          `userInfo`,
-          JSON.stringify({ id: this.state.id, name: this.state.id })
-        );
+        localStorage.setItem(`userInfo`, JSON.stringify({ id: this.state.id }));
         console.log(response);
         this.goTo();
       })
